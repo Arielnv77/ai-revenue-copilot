@@ -1,6 +1,6 @@
-"""⚡ Revenue Copilot — Home · Design v4 dark emerald SaaS"""
+""" RevenueOS — Home · Design v4 dark emerald SaaS"""
 import streamlit as st
-st.set_page_config(page_title="Revenue Copilot", page_icon="⚡", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="RevenueOS", page_icon="", layout="wide", initial_sidebar_state="expanded")
 from _shared_css import SHARED
 from _sidebar import render_sidebar
 st.markdown(SHARED, unsafe_allow_html=True)
@@ -66,8 +66,8 @@ render_sidebar()
 st.markdown("""
 <div class="rc-topbar">
   <div class="rc-topbar-left">
-    <div class="rc-logo-mark">⚡</div>
-    <span class="rc-logo-name">Revenue Copilot</span>
+    <div class="rc-logo-mark">R</div>
+    <span class="rc-logo-name">RevenueOS</span>
     <div class="rc-sep"></div>
     <span class="rc-crumb">Overview</span>
   </div>
@@ -113,9 +113,9 @@ st.markdown("""
   <div class="fg">
     <div class="fi"><div class="fic fic1">🔍</div><div class="fn">Automated EDA</div><div class="fd">Statistical profiling, null analysis, distributions and correlations — generated instantly on upload.</div></div>
     <div class="fi"><div class="fic fic2">🚨</div><div class="fn">Anomaly Detection</div><div class="fd">Identify unusual revenue spikes, drops and outliers using adaptive statistical thresholds.</div></div>
-    <div class="fi"><div class="fic fic3">📈</div><div class="fn">Revenue Forecasting</div><div class="fd">Facebook Prophet delivers 30, 60, or 90-day projections with calibrated confidence intervals.</div></div>
-    <div class="fi"><div class="fic fic4">👥</div><div class="fn">Customer Segments</div><div class="fd">RFM scoring + KMeans maps every customer into Champions, At Risk, Lost and more automatically.</div></div>
-    <div class="fi"><div class="fic fic5">💬</div><div class="fn">Natural Language Q&amp;A</div><div class="fd">Ask any business question. GPT-4o writes and executes the Python, then explains the result.</div></div>
+    <div class="fi"><div class="fic fic3"></div><div class="fn">Revenue Forecasting</div><div class="fd">Facebook Prophet delivers 30, 60, or 90-day projections with calibrated confidence intervals.</div></div>
+    <div class="fi"><div class="fic fic4"></div><div class="fn">Customer Segments</div><div class="fd">RFM scoring + KMeans maps every customer into Champions, At Risk, Lost and more automatically.</div></div>
+    <div class="fi"><div class="fic fic5"></div><div class="fn">Natural Language Q&amp;A</div><div class="fd">Ask any business question. GPT-4o writes and executes the Python, then explains the result.</div></div>
     <div class="fi"><div class="fic fic6">📄</div><div class="fn">PDF Reports</div><div class="fd">Export a complete analysis report with all charts and insights ready for board decks.</div></div>
   </div>
 </div>

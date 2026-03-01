@@ -1,11 +1,11 @@
-"""📤 Upload · Design v4"""
+""" Upload · Design v4"""
 import streamlit as st, pandas as pd, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from src.data.loader import load_csv, get_dataframe_profile
 from src.data.validator import validate_dataframe
 from src.preprocessing.cleaner import run_cleaning_pipeline
-st.set_page_config(page_title="Upload | Revenue Copilot", page_icon="📤", layout="wide")
+st.set_page_config(page_title="Upload | RevenueOS", page_icon="", layout="wide")
 from _shared_css import SHARED; from _sidebar import render_sidebar
 st.markdown(SHARED, unsafe_allow_html=True)
 render_sidebar()
@@ -13,7 +13,7 @@ render_sidebar()
 st.markdown("""
 <div class="rc-topbar">
   <div class="rc-topbar-left">
-    <div class="rc-logo-mark">⚡</div><span class="rc-logo-name">Revenue Copilot</span>
+    <div class="rc-logo-mark">R</div><span class="rc-logo-name">RevenueOS</span>
     <div class="rc-sep"></div><span class="rc-crumb">Upload</span>
   </div>
   <div class="rc-topbar-right"><span class="rc-pill gray">Step 1 of 5</span></div>
@@ -91,5 +91,5 @@ if uploaded_file is not None:
                 st.markdown(f"""<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:0.75rem;margin-bottom:3px;"><span style="color:#6da882;">{col_name}</span><span style="color:{clr};font-weight:600;">{pct:.1f}%</span></div><div class="rc-bw"><div class="rc-b" style="width:{min(pct,100)}%;background:{clr};"></div></div></div>""", unsafe_allow_html=True)
         dup=report.get("duplicate_rows",0); dp=report.get("duplicate_pct",0)
         st.markdown(f"""<div style="background:#0c1810;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.9rem 1.25rem;display:flex;align-items:center;justify-content:space-between;margin-top:1rem;"><span style="font-size:0.83rem;color:#6da882;">Duplicate rows</span><div><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:1.1rem;font-weight:800;color:{'#facc15' if dp>0 else '#4ade80'};">{dup}</span><span style="font-size:0.72rem;color:#4a7c59;margin-left:6px;">({dp:.1f}%)</span></div></div>""", unsafe_allow_html=True)
-    st.markdown(f'<div class="rc-footer"><span>Revenue Copilot · Upload</span><span>{df_clean.shape[0]:,} rows · {df_clean.shape[1]} cols</span></div>',unsafe_allow_html=True)
+    st.markdown(f'<div class="rc-footer"><span>RevenueOS · Upload</span><span>{df_clean.shape[0]:,} rows · {df_clean.shape[1]} cols</span></div>',unsafe_allow_html=True)
 st.markdown('</div>',unsafe_allow_html=True)

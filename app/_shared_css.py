@@ -1,5 +1,5 @@
 """
-AI Revenue Copilot — Design System
+RevenueOS — Design System
 Aesthetic: Astra-inspired · Deep black + Emerald gradients
 """
 
@@ -335,10 +335,10 @@ def render_sidebar(filename=None, nrows=None, ncols=None):
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:5px;">
             <div style="width:32px;height:32px;background:linear-gradient(135deg,#34d399 0%,#2dd4bf 100%);
                         border-radius:9px;flex-shrink:0;display:flex;align-items:center;
-                        justify-content:center;font-size:15px;box-shadow:0 0 14px rgba(52,211,153,0.3);">⚡</div>
+                        justify-content:center;font-size:15px;box-shadow:0 0 14px rgba(52,211,153,0.3);"></div>
             <div>
               <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.92rem;
-                          color:#e8f5f0;letter-spacing:-0.02em;line-height:1.2;">Revenue Copilot</div>
+                          color:#e8f5f0;letter-spacing:-0.02em;line-height:1.2;">RevenueOS</div>
               <div style="font-size:0.6rem;color:#6db89a;font-weight:500;
                           letter-spacing:0.09em;text-transform:uppercase;">AI Analytics · v3</div>
             </div>

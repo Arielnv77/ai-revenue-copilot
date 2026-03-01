@@ -1,15 +1,15 @@
-"""💬 Chat · Design v4"""
+""" Chat · Design v4"""
 import streamlit as st, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from src.nlp.query_engine import QueryEngine
 from src.utils.config import settings
-st.set_page_config(page_title="Chat | Revenue Copilot", page_icon="💬", layout="wide")
+st.set_page_config(page_title="Chat | RevenueOS", page_icon="", layout="wide")
 from _shared_css import SHARED; from _sidebar import render_sidebar
 st.markdown(SHARED, unsafe_allow_html=True)
 
 with st.sidebar:
-    st.markdown("""<div class="sb-brand"><div style="display:flex;align-items:center;gap:10px;margin-bottom:5px;"><div style="width:30px;height:30px;background:linear-gradient(135deg,#22c55e,#10b981);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 0 14px rgba(34,197,94,0.38);">⚡</div><div><div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:0.9rem;color:#ffffff;letter-spacing:-0.025em;">Revenue Copilot</div><div style="font-size:0.62rem;color:#2d4a35;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;">Enterprise Analytics</div></div></div></div><div class="sb-nav-lbl">Navigation</div>""",unsafe_allow_html=True)
+    st.markdown("""<div class="sb-brand"><div style="display:flex;align-items:center;gap:10px;margin-bottom:5px;"><div style="width:30px;height:30px;background:linear-gradient(135deg,#22c55e,#10b981);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 0 14px rgba(34,197,94,0.38);"></div><div><div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:0.9rem;color:#ffffff;letter-spacing:-0.025em;">RevenueOS</div><div style="font-size:0.62rem;color:#2d4a35;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;">Enterprise Analytics</div></div></div></div><div class="sb-nav-lbl">Navigation</div>""",unsafe_allow_html=True)
     st.markdown("<div style='height:0.3rem'></div>",unsafe_allow_html=True)
     if st.session_state.get("dataset_clean") is not None:
         fname=st.session_state.get("filename","dataset.csv"); n=len(st.session_state.dataset_clean); c=st.session_state.dataset_clean.shape[1]
@@ -22,10 +22,10 @@ with st.sidebar:
         st.markdown(f"""<div style="margin:0.2rem 0.75rem;background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.12);border-radius:6px;padding:6px 10px;font-size:0.75rem;color:#4a7c59;font-family:'JetBrains Mono',monospace;cursor:pointer;">→ {ex}</div>""",unsafe_allow_html=True)
 
 if st.session_state.get("dataset_clean") is None:
-    st.markdown("""<div class="rc-topbar"><div class="rc-topbar-left"><div class="rc-logo-mark">⚡</div><span class="rc-logo-name">Revenue Copilot</span><div class="rc-sep"></div><span class="rc-crumb">Chat</span></div></div><div class="rc-page"><div class="rc-empty"><span class="rc-empty-icon">📂</span><div class="rc-empty-ttl">No dataset loaded</div><div class="rc-empty-sub">Go to Upload first.</div></div></div>""",unsafe_allow_html=True); st.stop()
+    st.markdown("""<div class="rc-topbar"><div class="rc-topbar-left"><div class="rc-logo-mark">R</div><span class="rc-logo-name">RevenueOS</span><div class="rc-sep"></div><span class="rc-crumb">Chat</span></div></div><div class="rc-page"><div class="rc-empty"><span class="rc-empty-icon"></span><div class="rc-empty-ttl">No dataset loaded</div><div class="rc-empty-sub">Go to Upload first.</div></div></div>""",unsafe_allow_html=True); st.stop()
 
 df=st.session_state.dataset_clean; ok=bool(getattr(settings,"openai_api_key",None))
-st.markdown(f"""<div class="rc-topbar"><div class="rc-topbar-left"><div class="rc-logo-mark">⚡</div><span class="rc-logo-name">Revenue Copilot</span><div class="rc-sep"></div><span class="rc-crumb">Ask Your Data</span></div><div class="rc-topbar-right"><span class="rc-pill {'green' if ok else 'amber'}"><span class="rc-dot"></span>{'API connected' if ok else 'API key missing'}</span></div></div>""",unsafe_allow_html=True)
+st.markdown(f"""<div class="rc-topbar"><div class="rc-topbar-left"><div class="rc-logo-mark">R</div><span class="rc-logo-name">RevenueOS</span><div class="rc-sep"></div><span class="rc-crumb">Ask Your Data</span></div><div class="rc-topbar-right"><span class="rc-pill {'green' if ok else 'amber'}"><span class="rc-dot"></span>{'API connected' if ok else 'API key missing'}</span></div></div>""",unsafe_allow_html=True)
 st.markdown('<div class="rc-page">',unsafe_allow_html=True)
 st.markdown(f"""<div class="rc-page-hd"><div><div class="rc-title">Ask Your Data</div><div class="rc-sub">Natural language Q&amp;A · powered by GPT-4o</div></div><span class="rc-tag {'green' if ok else 'gold'}">GPT-4o</span></div>""",unsafe_allow_html=True)
 
@@ -40,7 +40,7 @@ with cl2:
     if st.button("Clear conversation",key="clr"): st.session_state.chat_history=[]; st.rerun()
 
 if not st.session_state.chat_history:
-    st.markdown("""<div class="rc-empty" style="margin:1rem 0 1.5rem;padding:3rem 2rem;"><span class="rc-empty-icon">💬</span><div class="rc-empty-ttl">Start a conversation</div><div class="rc-empty-sub">Ask anything about your data in plain English.<br>Use the suggested prompts in the sidebar to get started.</div></div>""",unsafe_allow_html=True)
+    st.markdown("""<div class="rc-empty" style="margin:1rem 0 1.5rem;padding:3rem 2rem;"><span class="rc-empty-icon"></span><div class="rc-empty-ttl">Start a conversation</div><div class="rc-empty-sub">Ask anything about your data in plain English.<br>Use the suggested prompts in the sidebar to get started.</div></div>""",unsafe_allow_html=True)
 
 for msg in st.session_state.chat_history:
     with st.chat_message(msg["role"]): st.markdown(msg["content"])
@@ -65,5 +65,5 @@ if question:=st.chat_input("Ask a question about your data…"):
                 except Exception as e: ans=f"❌ Error: {e}"; st.error(ans)
         st.session_state.chat_history.append({"role":"assistant","content":ans})
 
-st.markdown(f'<div class="rc-footer"><span>Revenue Copilot · Chat</span><span>{len(st.session_state.chat_history)} messages · GPT-4o</span></div>',unsafe_allow_html=True)
+st.markdown(f'<div class="rc-footer"><span>RevenueOS · Chat</span><span>{len(st.session_state.chat_history)} messages · GPT-4o</span></div>',unsafe_allow_html=True)
 st.markdown('</div>',unsafe_allow_html=True)

@@ -9,7 +9,7 @@ import pandas as pd
 
 
 class BaseModel(ABC):
-    """Abstract interface that all AI Revenue Copilot models must implement."""
+    """Abstract interface that all RevenueOS models must implement."""
 
     def __init__(self, name: str = "BaseModel"):
         self.name = name

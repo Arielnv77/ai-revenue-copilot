@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     """Application configuration loaded from environment variables."""
 
     # General
-    app_name: str = "AI Revenue Copilot"
+    app_name: str = "RevenueOS"
     app_version: str = "0.1.0"
     debug: bool = True
 

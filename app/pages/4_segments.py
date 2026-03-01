@@ -1,20 +1,20 @@
-"""👥 Segments · Design v4"""
+""" Segments · Design v4"""
 import streamlit as st, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from src.preprocessing.feature_engineering import compute_rfm, assign_rfm_labels
 from src.models.segmentation import CustomerSegmenter
 from src.visualization.charts import segmentation_chart, rfm_scatter
-st.set_page_config(page_title="Segments | Revenue Copilot", page_icon="👥", layout="wide")
+st.set_page_config(page_title="Segments | RevenueOS", page_icon="", layout="wide")
 from _shared_css import SHARED; from _sidebar import render_sidebar
 st.markdown(SHARED, unsafe_allow_html=True); render_sidebar()
 
-st.markdown("""<div class="rc-topbar"><div class="rc-topbar-left"><div class="rc-logo-mark">⚡</div><span class="rc-logo-name">Revenue Copilot</span><div class="rc-sep"></div><span class="rc-crumb">Segments</span></div><div class="rc-topbar-right"><span class="rc-pill blue">RFM + KMeans</span></div></div>""",unsafe_allow_html=True)
+st.markdown("""<div class="rc-topbar"><div class="rc-topbar-left"><div class="rc-logo-mark">R</div><span class="rc-logo-name">RevenueOS</span><div class="rc-sep"></div><span class="rc-crumb">Segments</span></div><div class="rc-topbar-right"><span class="rc-pill blue">RFM + KMeans</span></div></div>""",unsafe_allow_html=True)
 st.markdown('<div class="rc-page">',unsafe_allow_html=True)
 st.markdown("""<div class="rc-page-hd"><div><div class="rc-title">Customer Segmentation</div><div class="rc-sub">RFM analysis · KMeans clustering · behavioral labeling</div></div><span class="rc-tag blue">ML Model</span></div>""",unsafe_allow_html=True)
 
 if st.session_state.get("dataset_clean") is None:
-    st.markdown("""<div class="rc-empty"><span class="rc-empty-icon">📂</span><div class="rc-empty-ttl">No dataset loaded</div><div class="rc-empty-sub">Go to Upload first.</div></div>""",unsafe_allow_html=True); st.stop()
+    st.markdown("""<div class="rc-empty"><span class="rc-empty-icon"></span><div class="rc-empty-ttl">No dataset loaded</div><div class="rc-empty-sub">Go to Upload first.</div></div>""",unsafe_allow_html=True); st.stop()
 
 df=st.session_state.dataset_clean; ac=df.columns.tolist()
 dcs=df.select_dtypes(include=["datetime64"]).columns.tolist()
@@ -67,6 +67,6 @@ if run:
                         st.markdown(f"""<div style="background:#0c1810;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:1rem 1.25rem;margin-bottom:6px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><div style="display:flex;align-items:center;gap:8px;"><div style="width:8px;height:8px;border-radius:50%;background:{clr};"></div><span style="font-weight:600;font-size:0.85rem;color:#ffffff;">{row['Segment']}</span></div><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:1rem;font-weight:800;color:{clr};">{row['Customers']:,}</span></div><div class="rc-bw"><div class="rc-b" style="width:{row['Pct']}%;background:{clr};"></div></div><div style="font-size:0.68rem;color:#4a7c59;margin-top:3px;">{row['Pct']}% of base</div></div>""",unsafe_allow_html=True)
             with td: st.dataframe(rs.round(2).reset_index(drop=True),width='stretch')
         except Exception as e: st.markdown(f'<div class="rc-err"><div class="rc-err-ttl">Failed</div><div class="rc-err-body">{e}</div></div>',unsafe_allow_html=True)
-else: st.markdown("""<div class="rc-empty"><span class="rc-empty-icon">👥</span><div class="rc-empty-ttl">Map your customer segments</div><div class="rc-empty-sub">Configure columns above and click Run Segmentation.</div></div>""",unsafe_allow_html=True)
-st.markdown('<div class="rc-footer"><span>Revenue Copilot · Segments</span><span>RFM · KMeans</span></div>',unsafe_allow_html=True)
+else: st.markdown("""<div class="rc-empty"><span class="rc-empty-icon"></span><div class="rc-empty-ttl">Map your customer segments</div><div class="rc-empty-sub">Configure columns above and click Run Segmentation.</div></div>""",unsafe_allow_html=True)
+st.markdown('<div class="rc-footer"><span>RevenueOS · Segments</span><span>RFM · KMeans</span></div>',unsafe_allow_html=True)
 st.markdown('</div>',unsafe_allow_html=True)

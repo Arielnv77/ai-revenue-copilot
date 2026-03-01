@@ -32,7 +32,7 @@ def generate_pdf_report(
     # Title page
     pdf.add_page()
     pdf.set_font("Helvetica", "B", 24)
-    pdf.cell(0, 20, "AI Revenue Copilot", ln=True, align="C")
+    pdf.cell(0, 20, "RevenueOS", ln=True, align="C")
     pdf.set_font("Helvetica", "", 14)
     pdf.cell(0, 10, "Revenue Analysis Report", ln=True, align="C")
     pdf.set_font("Helvetica", "", 10)

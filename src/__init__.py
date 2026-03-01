@@ -1,1 +1,1 @@
-# AI Revenue Copilot — Source Package
+# RevenueOS — Source Package

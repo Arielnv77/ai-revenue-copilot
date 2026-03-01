@@ -1,20 +1,20 @@
-"""📈 Forecast · Design v4"""
+""" Forecast · Design v4"""
 import streamlit as st, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from src.models.forecaster import RevenueForecaster, prepare_forecast_data
 from src.preprocessing.feature_engineering import aggregate_revenue_by_period
 from src.visualization.charts import forecast_chart
-st.set_page_config(page_title="Forecast | Revenue Copilot", page_icon="📈", layout="wide")
+st.set_page_config(page_title="Forecast | RevenueOS", page_icon="", layout="wide")
 from _shared_css import SHARED; from _sidebar import render_sidebar
 st.markdown(SHARED, unsafe_allow_html=True); render_sidebar()
 
-st.markdown("""<div class="rc-topbar"><div class="rc-topbar-left"><div class="rc-logo-mark">⚡</div><span class="rc-logo-name">Revenue Copilot</span><div class="rc-sep"></div><span class="rc-crumb">Forecast</span></div><div class="rc-topbar-right"><span class="rc-pill blue">Prophet ML</span></div></div>""", unsafe_allow_html=True)
+st.markdown("""<div class="rc-topbar"><div class="rc-topbar-left"><div class="rc-logo-mark">R</div><span class="rc-logo-name">RevenueOS</span><div class="rc-sep"></div><span class="rc-crumb">Forecast</span></div><div class="rc-topbar-right"><span class="rc-pill blue">Prophet ML</span></div></div>""", unsafe_allow_html=True)
 st.markdown('<div class="rc-page">', unsafe_allow_html=True)
 st.markdown("""<div class="rc-page-hd"><div><div class="rc-title">Revenue Forecast</div><div class="rc-sub">Facebook Prophet · time-series prediction with confidence intervals</div></div><span class="rc-tag blue">ML Model</span></div>""", unsafe_allow_html=True)
 
 if st.session_state.get("dataset_clean") is None:
-    st.markdown("""<div class="rc-empty"><span class="rc-empty-icon">📂</span><div class="rc-empty-ttl">No dataset loaded</div><div class="rc-empty-sub">Go to Upload in the sidebar first.</div></div>""", unsafe_allow_html=True); st.stop()
+    st.markdown("""<div class="rc-empty"><span class="rc-empty-icon"></span><div class="rc-empty-ttl">No dataset loaded</div><div class="rc-empty-sub">Go to Upload in the sidebar first.</div></div>""", unsafe_allow_html=True); st.stop()
 
 df=st.session_state.dataset_clean; dc=df.select_dtypes(include=["datetime64"]).columns.tolist(); nc=df.select_dtypes(include=["number"]).columns.tolist()
 if not dc:
@@ -53,6 +53,6 @@ if run:
                 st.dataframe(fut.round(2).reset_index(drop=True),width='stretch')
                 with st.expander("Full forecast table"): st.dataframe(fdf.round(2),width='stretch')
         except Exception as e: st.markdown(f'<div class="rc-err"><div class="rc-err-ttl">Forecast failed</div><div class="rc-err-body">{e}</div></div>',unsafe_allow_html=True)
-else: st.markdown("""<div class="rc-empty"><span class="rc-empty-icon">📈</span><div class="rc-empty-ttl">Configure and generate your forecast</div><div class="rc-empty-sub">Select columns above and click Generate Forecast.</div></div>""",unsafe_allow_html=True)
-st.markdown('<div class="rc-footer"><span>Revenue Copilot · Forecast</span><span>Powered by Facebook Prophet</span></div>',unsafe_allow_html=True)
+else: st.markdown("""<div class="rc-empty"><span class="rc-empty-icon"></span><div class="rc-empty-ttl">Configure and generate your forecast</div><div class="rc-empty-sub">Select columns above and click Generate Forecast.</div></div>""",unsafe_allow_html=True)
+st.markdown('<div class="rc-footer"><span>RevenueOS · Forecast</span><span>Powered by Facebook Prophet</span></div>',unsafe_allow_html=True)
 st.markdown('</div>',unsafe_allow_html=True)

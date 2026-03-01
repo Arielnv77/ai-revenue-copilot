@@ -1,4 +1,4 @@
-# ⚡ AI Revenue Copilot
+#  RevenueOS
 
 ![Python](https://img.shields.io/badge/Python-3.13-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-009688.svg)
@@ -8,21 +8,21 @@
 
 > **Enterprise-grade SaaS for Automated Revenue Intelligence, ML Forecasting, and Natural Language Data Querying.**
 
-AI Revenue Copilot transforms raw sales data (CSV) into strategic intelligence in under 60 seconds without requiring any code or complex pipelines. It combines classical Machine Learning (time-series forecasting & clustering) with Generative AI to provide a complete "Analyst-in-a-box" experience.
+RevenueOS transforms raw sales data (CSV) into strategic intelligence in under 60 seconds without requiring any code or complex pipelines. It combines classical Machine Learning (time-series forecasting & clustering) with Generative AI to provide a complete "Analyst-in-a-box" experience.
 
 ---
 
-## 🌟 Key Features
+##  Key Features
 
-1. **Upload & Auto-EDA 📥**: Drop any sales CSV. The system auto-detects encoding (with multi-fallback support), infers schemas, runs data quality checks, and generates a Quality Score.
-2. **Interactive Dashboard 📊**: Auto-generated Plotly visualizations. Explores distributions, correlation heatmaps, and aggregations automatically.
-3. **Revenue Forecasting 📈**: Powered by **Facebook Prophet**. Automatically handles trends and weekly/yearly seasonality to project revenue up to 90 days ahead with confidence intervals.
-4. **Customer Segments 👥**: Mathematical profiling combining **RFM Analysis** (Recency, Frequency, Monetary) with **KMeans Clustering** to build behavioral customer segments (Champions, At-Risk, Loyalists).
-5. **Ask Your Data (GenAI Q&A) 💬**: A natural language query engine using GPT-4o. The AI dynamically generates Pandas Python code to answer plain-English business questions and executes it securely.
+1. **Upload & Auto-EDA **: Drop any sales CSV. The system auto-detects encoding (with multi-fallback support), infers schemas, runs data quality checks, and generates a Quality Score.
+2. **Interactive Dashboard **: Auto-generated Plotly visualizations. Explores distributions, correlation heatmaps, and aggregations automatically.
+3. **Revenue Forecasting **: Powered by **Facebook Prophet**. Automatically handles trends and weekly/yearly seasonality to project revenue up to 90 days ahead with confidence intervals.
+4. **Customer Segments **: Mathematical profiling combining **RFM Analysis** (Recency, Frequency, Monetary) with **KMeans Clustering** to build behavioral customer segments (Champions, At-Risk, Loyalists).
+5. **Ask Your Data (GenAI Q&A) **: A natural language query engine using GPT-4o. The AI dynamically generates Pandas Python code to answer plain-English business questions and executes it securely.
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 The project is decoupled into a robust backend and a modern frontend:
 
@@ -35,12 +35,12 @@ For the **Ask Your Data** feature, the system implements a **BYOK** architecture
 
 ---
 
-## 🚀 Quickstart (Local Development)
+##  Quickstart (Local Development)
 
 ### 1. Clone & Setup
 ```bash
-git clone https://github.com/yourusername/ai_revenue_copilot.git
-cd ai_revenue_copilot
+git clone https://github.com/yourusername/revenueos.git
+cd revenueos
 
 # Create virtual environment
 python3.13 -m venv venv
@@ -75,11 +75,11 @@ streamlit run app/streamlit_app.py --server.port 8501
 
 ---
 
-## 🧪 Testing
+##  Testing
 The codebase has 100% core test coverage using `pytest`, testing everything from the data cleaning pipeline and ML model instantiation to API endpoints.
 ```bash
 pytest tests/ -v
 ```
 
-## 📜 License
+##  License
 MIT License. See `LICENSE` for details.

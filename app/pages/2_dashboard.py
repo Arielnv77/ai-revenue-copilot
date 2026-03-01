@@ -1,22 +1,22 @@
-"""📊 Dashboard · Design v4"""
+""" Dashboard · Design v4"""
 import streamlit as st, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from src.visualization.charts import revenue_time_series, correlation_heatmap, distribution_chart
 from src.preprocessing.feature_engineering import aggregate_revenue_by_period
-st.set_page_config(page_title="Dashboard | Revenue Copilot", page_icon="📊", layout="wide")
+st.set_page_config(page_title="Dashboard | RevenueOS", page_icon="", layout="wide")
 from _shared_css import SHARED; from _sidebar import render_sidebar
 st.markdown(SHARED, unsafe_allow_html=True); render_sidebar()
 
 if st.session_state.get("dataset_clean") is None:
-    st.markdown("""<div class="rc-topbar"><div class="rc-topbar-left"><div class="rc-logo-mark">⚡</div><span class="rc-logo-name">Revenue Copilot</span><div class="rc-sep"></div><span class="rc-crumb">Dashboard</span></div></div><div class="rc-page"><div class="rc-empty"><span class="rc-empty-icon">📂</span><div class="rc-empty-ttl">No dataset loaded</div><div class="rc-empty-sub">Go to Upload first.</div></div></div>""",unsafe_allow_html=True); st.stop()
+    st.markdown("""<div class="rc-topbar"><div class="rc-topbar-left"><div class="rc-logo-mark">R</div><span class="rc-logo-name">RevenueOS</span><div class="rc-sep"></div><span class="rc-crumb">Dashboard</span></div></div><div class="rc-page"><div class="rc-empty"><span class="rc-empty-icon"></span><div class="rc-empty-ttl">No dataset loaded</div><div class="rc-empty-sub">Go to Upload first.</div></div></div>""",unsafe_allow_html=True); st.stop()
 
 df=st.session_state.dataset_clean; fname=st.session_state.get("filename","dataset.csv")
 nc=df.select_dtypes(include=["number"]).columns.tolist()
 dc=df.select_dtypes(include=["datetime64"]).columns.tolist()
 cc=df.select_dtypes(include=["object","category"]).columns.tolist()
 
-st.markdown(f"""<div class="rc-topbar"><div class="rc-topbar-left"><div class="rc-logo-mark">⚡</div><span class="rc-logo-name">Revenue Copilot</span><div class="rc-sep"></div><span class="rc-crumb">Dashboard</span></div><div class="rc-topbar-right"><span class="rc-pill green"><span class="rc-dot"></span>Live</span><span style="font-size:0.72rem;color:#4a7c59;padding:3px 8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:4px;font-family:'JetBrains Mono',monospace;">{fname}</span></div></div>""",unsafe_allow_html=True)
+st.markdown(f"""<div class="rc-topbar"><div class="rc-topbar-left"><div class="rc-logo-mark">R</div><span class="rc-logo-name">RevenueOS</span><div class="rc-sep"></div><span class="rc-crumb">Dashboard</span></div><div class="rc-topbar-right"><span class="rc-pill green"><span class="rc-dot"></span>Live</span><span style="font-size:0.72rem;color:#4a7c59;padding:3px 8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:4px;font-family:'JetBrains Mono',monospace;">{fname}</span></div></div>""",unsafe_allow_html=True)
 st.markdown('<div class="rc-page">',unsafe_allow_html=True)
 st.markdown(f"""<div class="rc-page-hd"><div><div class="rc-title">Analysis Dashboard</div><div class="rc-sub">{df.shape[0]:,} rows · {df.shape[1]} columns · {df.memory_usage(deep=True).sum()/1024**2:.1f} MB</div></div><span class="rc-tag green">Auto-EDA</span></div>""",unsafe_allow_html=True)
 
@@ -83,5 +83,5 @@ with t4:
     with it3:
         n=st.slider("Rows",5,200,25,key="raw_n"); st.dataframe(df.head(n),width='stretch')
 
-st.markdown(f'<div class="rc-footer"><span>Revenue Copilot · Dashboard</span><span>{df.shape[0]:,} rows · {df.shape[1]} cols</span></div>',unsafe_allow_html=True)
+st.markdown(f'<div class="rc-footer"><span>RevenueOS · Dashboard</span><span>{df.shape[0]:,} rows · {df.shape[1]} cols</span></div>',unsafe_allow_html=True)
 st.markdown('</div>',unsafe_allow_html=True)

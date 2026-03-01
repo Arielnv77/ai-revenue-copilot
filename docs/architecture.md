@@ -2,7 +2,7 @@
 
 ## System Overview
 
-AI Revenue Copilot follows a layered architecture:
+RevenueOS follows a layered architecture:
 
 ```
 ┌─────────────────────────────────┐
