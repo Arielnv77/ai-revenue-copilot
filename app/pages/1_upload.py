@@ -5,7 +5,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from src.data.loader import load_csv, get_dataframe_profile
 from src.data.validator import validate_dataframe
 from src.preprocessing.cleaner import run_cleaning_pipeline
-st.set_page_config(page_title="Upload | RevenueOS", page_icon="/Users/ariel/AIprojects/AI_REVENUE/app/assets/logo.png", layout="wide")
+st.set_page_config(page_title="Upload | RevenueOS", page_icon="app/assets/logo.png", layout="wide")
 from _shared_css import SHARED; from _sidebar import render_sidebar
 st.markdown(SHARED, unsafe_allow_html=True)
 render_sidebar()

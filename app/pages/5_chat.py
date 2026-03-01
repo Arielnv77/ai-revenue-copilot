@@ -4,7 +4,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from src.nlp.query_engine import QueryEngine
 from src.utils.config import settings
-st.set_page_config(page_title="Chat | RevenueOS", page_icon="/Users/ariel/AIprojects/AI_REVENUE/app/assets/logo.png", layout="wide")
+st.set_page_config(page_title="Chat | RevenueOS", page_icon="app/assets/logo.png", layout="wide")
 from _shared_css import SHARED; from _sidebar import render_sidebar
 st.markdown(SHARED, unsafe_allow_html=True)
 
@@ -62,7 +62,7 @@ if question:=st.chat_input("Ask a question about your data…"):
                     st.markdown(ans)
                     if res.get("insight"): st.markdown(f"""<div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.18);border-radius:8px;padding:0.75rem 1rem;margin-top:0.75rem;font-size:0.82rem;color:#4ade80;">💡 {res['insight']}</div>""",unsafe_allow_html=True)
                     if res.get("execution_result"): st.code(res["execution_result"])
-                except Exception as e: ans=f"❌ Error: {e}"; st.error(ans)
+                except Exception as e: ans=f" Error: {e}"; st.error(ans)
         st.session_state.chat_history.append({"role":"assistant","content":ans})
 
 st.markdown(f'<div class="rc-footer"><span>RevenueOS · Chat</span><span>{len(st.session_state.chat_history)} messages · GPT-4o</span></div>',unsafe_allow_html=True)
