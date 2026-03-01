@@ -5,7 +5,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from src.models.forecaster import RevenueForecaster, prepare_forecast_data
 from src.preprocessing.feature_engineering import aggregate_revenue_by_period
 from src.visualization.charts import forecast_chart
-st.set_page_config(page_title="Forecast | RevenueOS", page_icon="", layout="wide")
+st.set_page_config(page_title="Forecast | RevenueOS", page_icon="/Users/ariel/AIprojects/AI_REVENUE/app/assets/logo.png", layout="wide")
 from _shared_css import SHARED; from _sidebar import render_sidebar
 st.markdown(SHARED, unsafe_allow_html=True); render_sidebar()
 

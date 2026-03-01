@@ -4,7 +4,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from src.visualization.charts import revenue_time_series, correlation_heatmap, distribution_chart
 from src.preprocessing.feature_engineering import aggregate_revenue_by_period
-st.set_page_config(page_title="Dashboard | RevenueOS", page_icon="", layout="wide")
+st.set_page_config(page_title="Dashboard | RevenueOS", page_icon="/Users/ariel/AIprojects/AI_REVENUE/app/assets/logo.png", layout="wide")
 from _shared_css import SHARED; from _sidebar import render_sidebar
 st.markdown(SHARED, unsafe_allow_html=True); render_sidebar()
 

@@ -1,6 +1,6 @@
 """ RevenueOS — Home · Design v4 dark emerald SaaS"""
 import streamlit as st
-st.set_page_config(page_title="RevenueOS", page_icon="", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="RevenueOS", page_icon="/Users/ariel/AIprojects/AI_REVENUE/app/assets/logo.png", layout="wide", initial_sidebar_state="expanded")
 from _shared_css import SHARED
 from _sidebar import render_sidebar
 st.markdown(SHARED, unsafe_allow_html=True)

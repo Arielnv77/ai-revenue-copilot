@@ -5,7 +5,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from src.preprocessing.feature_engineering import compute_rfm, assign_rfm_labels
 from src.models.segmentation import CustomerSegmenter
 from src.visualization.charts import segmentation_chart, rfm_scatter
-st.set_page_config(page_title="Segments | RevenueOS", page_icon="", layout="wide")
+st.set_page_config(page_title="Segments | RevenueOS", page_icon="/Users/ariel/AIprojects/AI_REVENUE/app/assets/logo.png", layout="wide")
 from _shared_css import SHARED; from _sidebar import render_sidebar
 st.markdown(SHARED, unsafe_allow_html=True); render_sidebar()
 
