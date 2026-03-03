@@ -31,20 +31,11 @@ with col_up:
 with col_info:
     st.markdown("""
 <div class="rc-card">
-  <div class="rc-card-hd"><span class="rc-card-ttl">Sample datasets</span></div>
-  <div>
-    <div style="border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 1.5rem;display:flex;gap:12px;align-items:flex-start;">
-      <span style="font-size:1rem;flex-shrink:0;">🛒</span>
-      <div><div style="font-size:0.83rem;font-weight:600;color:#ffffff;margin-bottom:1px;">Online Retail II (UCI)</div><div style="font-size:0.73rem;color:#4a7c59;">UK e-commerce · 1M+ rows</div></div>
-    </div>
-    <div style="border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 1.5rem;display:flex;gap:12px;align-items:flex-start;">
-      <span style="font-size:1rem;flex-shrink:0;">🏪</span>
-      <div><div style="font-size:0.83rem;font-weight:600;color:#ffffff;margin-bottom:1px;">Superstore Sales</div><div style="font-size:0.73rem;color:#4a7c59;">Clean US retail · ideal for RFM</div></div>
-    </div>
-    <div style="padding:1rem 1.5rem;display:flex;gap:12px;align-items:flex-start;">
-      <span style="font-size:1rem;flex-shrink:0;">📦</span>
-      <div><div style="font-size:0.83rem;font-weight:600;color:#ffffff;margin-bottom:1px;">Brazilian E-Commerce</div><div style="font-size:0.73rem;color:#4a7c59;">Olist multi-table orders dataset</div></div>
-    </div>
+  <div class="rc-card-hd"><span class="rc-card-ttl">Data Requirements</span></div>
+  <div style="padding:1.25rem 1.5rem;color:#a0aec0;font-size:0.85rem;line-height:1.6;">
+    <p style="margin-top:0;margin-bottom:1rem;"><strong style="color:#ffffff;">Format:</strong> Standard CSV file (.csv)</p>
+    <p style="margin-top:0;margin-bottom:1rem;"><strong style="color:#ffffff;">Structure:</strong> Ideally should contain a unique identifier, timestamp, revenue amount, and dimension columns (e.g., product category, region, customer segment).</p>
+    <p style="margin-top:0;margin-bottom:0;"><strong style="color:#ffffff;">Privacy:</strong> Your data is processed securely in memory and is not stored permanently on our servers.</p>
   </div>
 </div>
 """, unsafe_allow_html=True)
