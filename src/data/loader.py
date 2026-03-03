@@ -96,6 +96,8 @@ def load_csv(
                 sep=separator,
                 nrows=sample_rows,
                 on_bad_lines="warn",
+                engine="pyarrow",
+                dtype_backend="pyarrow"
             )
             # If successful, break out of loop
             break

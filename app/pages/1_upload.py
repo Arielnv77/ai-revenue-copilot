@@ -1,5 +1,5 @@
 """ Upload · Design v4"""
-import streamlit as st, pandas as pd, sys
+import streamlit as st, pandas as pd, sys, gc
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from src.data.loader import load_csv, get_dataframe_profile
@@ -42,11 +42,22 @@ with col_info:
 
 if uploaded_file is not None:
     with st.spinner("Profiling and cleaning dataset…"):
-        df = load_csv(uploaded_file); st.session_state.dataset = df
-        qr = validate_dataframe(df); st.session_state.quality_report = qr
-        df_clean = run_cleaning_pipeline(df.copy())
-        st.session_state.dataset_clean = df_clean; st.session_state.filename = uploaded_file.name
-    profile = get_dataframe_profile(df_clean); score = qr.quality_score
+        df = load_csv(uploaded_file)
+        qr = validate_dataframe(df)
+        st.session_state.quality_report = qr
+        
+        # Process clean data and clear raw memory
+        df = run_cleaning_pipeline(df)
+        st.session_state.dataset_clean = df
+        st.session_state.dataset = None  # Free up raw dataset memory
+        st.session_state.filename = uploaded_file.name
+        
+        # Force garbage collection to recover RAM heavily used during load
+        del df
+        gc.collect()
+        
+    df = st.session_state.dataset_clean
+    profile = get_dataframe_profile(df); score = qr.quality_score
 
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown(f"""<div style="background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.20);border-radius:var(--r-md);padding:0.9rem 1.4rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;"><div style="display:flex;align-items:center;gap:10px;"><span>✅</span><div><div style="font-size:0.85rem;font-weight:600;color:#4ade80;">{uploaded_file.name}</div><div style="font-size:0.75rem;color:#4a7c59;">{profile['rows']:,} rows · {profile['columns']} columns · {profile['memory_mb']} MB</div></div></div><span class="rc-tag green">Loaded</span></div>""", unsafe_allow_html=True)
@@ -61,10 +72,10 @@ if uploaded_file is not None:
     t1,t2,t3 = st.tabs(["Data Preview","Column Inspector","Quality Report"])
     with t1:
         n = st.slider("Rows",5,100,20,key="pn")
-        st.dataframe(df_clean.head(n),width='stretch')
+        st.dataframe(df.head(n),width='stretch')
     with t2:
-        for cn in df_clean.columns:
-            s=df_clean[cn]; dtype=str(s.dtype); np=s.isnull().mean()*100
+        for cn in df.columns:
+            s=df[cn]; dtype=str(s.dtype); np=s.isnull().mean()*100
             nc="#f87171" if np>20 else "#facc15" if np>5 else "#4ade80"
             tl = "int" if "int" in dtype else "float" if "float" in dtype else "text" if "object" in dtype else "date" if "date" in dtype else dtype[:5]
             tc = "blue" if tl in("int","float") else "green" if tl=="text" else "gold" if tl=="date" else "gray"
@@ -82,5 +93,5 @@ if uploaded_file is not None:
                 st.markdown(f"""<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:0.75rem;margin-bottom:3px;"><span style="color:#6da882;">{col_name}</span><span style="color:{clr};font-weight:600;">{pct:.1f}%</span></div><div class="rc-bw"><div class="rc-b" style="width:{min(pct,100)}%;background:{clr};"></div></div></div>""", unsafe_allow_html=True)
         dup=report.get("duplicate_rows",0); dp=report.get("duplicate_pct",0)
         st.markdown(f"""<div style="background:#0c1810;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.9rem 1.25rem;display:flex;align-items:center;justify-content:space-between;margin-top:1rem;"><span style="font-size:0.83rem;color:#6da882;">Duplicate rows</span><div><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:1.1rem;font-weight:800;color:{'#facc15' if dp>0 else '#4ade80'};">{dup}</span><span style="font-size:0.72rem;color:#4a7c59;margin-left:6px;">({dp:.1f}%)</span></div></div>""", unsafe_allow_html=True)
-    st.markdown(f'<div class="rc-footer"><span>RevenueOS · Upload</span><span>{df_clean.shape[0]:,} rows · {df_clean.shape[1]} cols</span></div>',unsafe_allow_html=True)
+    st.markdown(f'<div class="rc-footer"><span>RevenueOS · Upload</span><span>{df.shape[0]:,} rows · {df.shape[1]} cols</span></div>',unsafe_allow_html=True)
 st.markdown('</div>',unsafe_allow_html=True)
