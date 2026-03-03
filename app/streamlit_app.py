@@ -6,6 +6,20 @@ from _sidebar import render_sidebar
 st.markdown(SHARED, unsafe_allow_html=True)
 st.markdown("""
 <style>
+.animate-enter {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+.animate-enter.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
+.delay-4 { transition-delay: 0.4s; }
+
 .hero{padding:6rem 3rem 5rem;max-width:1380px;margin:0 auto;}
 .hero-ey{display:inline-flex;align-items:center;gap:8px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.22);border-radius:99px;padding:5px 14px;font-size:0.72rem;font-weight:700;color:#4ade80;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:2rem;}
 .h-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e;display:inline-block;}
@@ -21,7 +35,8 @@ st.markdown("""
 .sdiv{height:1px;background:rgba(255,255,255,0.06);}
 .sw{padding:0 3rem;max-width:1380px;margin:0 auto;}
 .sg{display:flex;gap:1px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);border-radius:14px;overflow:hidden;}
-.sbl{flex:1;background:#090f0c;padding:1.5rem 2rem;border-right:1px solid rgba(255,255,255,0.06);}
+.sbl{flex:1;background:#090f0c;padding:1.5rem 2rem;border-right:1px solid rgba(255,255,255,0.06);transition:background 0.3s, transform 0.3s;}
+.sbl:hover{background:#0c1810;transform:translateY(-2px);}
 .sbl:last-child{border-right:none;}
 .sn{font-family:'Bricolage Grotesque',sans-serif;font-size:2rem;font-weight:800;color:#ffffff;line-height:1;}
 .sl{font-size:0.73rem;color:#4a7c59;font-weight:500;margin-top:5px;}
@@ -45,8 +60,8 @@ st.markdown("""
 .fd{font-size:0.82rem;color:#4a7c59;line-height:1.6;}
 .wfw{padding:0 3rem 5rem;max-width:1380px;margin:0 auto;}
 .wg{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
-.wc{background:#090f0c;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.75rem;position:relative;overflow:hidden;transition:border-color 0.2s;}
-.wc:hover{border-color:rgba(34,197,94,0.22);}
+.wc{background:#090f0c;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.75rem;position:relative;overflow:hidden;transition:border-color 0.2s, transform 0.3s, box-shadow 0.3s;}
+.wc:hover{border-color:rgba(34,197,94,0.22);transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,0.5);}
 .wc::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#22c55e,#22d3ee);}
 .wn{font-family:'Bricolage Grotesque',sans-serif;font-size:3rem;font-weight:800;color:rgba(34,197,94,0.12);line-height:1;margin-bottom:0.75rem;letter-spacing:-0.06em;}
 .wt{font-family:'Bricolage Grotesque',sans-serif;font-size:0.95rem;font-weight:700;color:#ffffff;margin-bottom:0.35rem;}
@@ -58,6 +73,21 @@ st.markdown("""
 .cta-h{font-family:'Bricolage Grotesque',sans-serif;font-size:1.9rem;font-weight:800;color:#ffffff;letter-spacing:-0.04em;line-height:1.1;margin-bottom:0.5rem;}
 .cta-s{font-size:0.88rem;color:#4a7c59;line-height:1.6;}
 .cta-btn{display:inline-flex;align-items:center;gap:10px;background:#22c55e;color:#060e09;border-radius:8px;padding:0.85rem 2rem;font-weight:800;font-size:0.88rem;box-shadow:0 0 32px rgba(34,197,94,0.35);white-space:nowrap;flex-shrink:0;}
+
+@media (max-width: 768px) {
+  .hero{padding:4rem 1.5rem 2rem;}
+  .sw{padding:0 1.5rem;}
+  .sg{flex-direction:column;}
+  .sbl{border-right:none;border-bottom:1px solid rgba(255,255,255,0.06);padding:1.5rem;}
+  .sbl:last-child{border-bottom:none;}
+  .fw{padding:3rem 1.5rem;}
+  .fg{grid-template-columns:1fr;}
+  .wfw{padding:0 1.5rem 3rem;}
+  .wg{grid-template-columns:1fr;}
+  .ctaw{padding:0 1.5rem 3rem;}
+  .cta-box{flex-direction:column;text-align:center;padding:2.5rem 1.5rem;align-items:center;}
+  .cta-box::before{display:none;}
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -78,14 +108,14 @@ st.markdown("""
 </div>
 
 <div class="hero">
-  <div class="hero-ey"><span class="h-dot"></span>&nbsp;AI-Powered Revenue Intelligence</div>
-  <div class="hero-h">The modern<br><span class="g">revenue analytics</span><br>platform</div>
-  <div class="hero-s">Upload any sales CSV and get automated EDA, 90-day forecasting, RFM segmentation, and natural-language Q&amp;A — in under 60 seconds.</div>
-  <div class="hero-acts">
-    <span class="btn-p">Get Started &nbsp;→</span>
-    <span class="btn-s">View documentation</span>
+  <div class="hero-ey animate-enter"><span class="h-dot"></span>&nbsp;AI-Powered Revenue Intelligence</div>
+  <div class="hero-h animate-enter delay-1">The modern<br><span class="g">revenue analytics</span><br>platform</div>
+  <div class="hero-s animate-enter delay-2">Upload any sales CSV and get automated EDA, 90-day forecasting, RFM segmentation, and natural-language Q&amp;A — in under 60 seconds.</div>
+  <div class="hero-acts animate-enter delay-3">
+    <a href="upload" target="_self" style="text-decoration:none;"><span class="btn-p">Get Started &nbsp;→</span></a>
+    <a href="dashboard" target="_self" style="text-decoration:none;"><span class="btn-s">My Document</span></a>
   </div>
-  <div class="trust">
+  <div class="trust animate-enter delay-4">
     <div class="ti"><div class="tc">✓</div>No setup required</div>
     <div class="ti"><div class="tc">✓</div>Works with any CSV</div>
     <div class="ti"><div class="tc">✓</div>ML models built-in</div>
@@ -107,10 +137,10 @@ st.markdown("""
 <div class="sdiv" style="margin-top:0;"></div>
 
 <div class="fw">
-  <div class="sec-ey">Platform capabilities</div>
-  <div class="sec-h">Everything you need to<br>understand your revenue</div>
-  <div class="sec-s">Six integrated modules that work together from a single CSV. No pipelines. No configuration.</div>
-  <div class="fg">
+  <div class="sec-ey animate-enter">Platform capabilities</div>
+  <div class="sec-h animate-enter delay-1">Everything you need to<br>understand your revenue</div>
+  <div class="sec-s animate-enter delay-2">Six integrated modules that work together from a single CSV. No pipelines. No configuration.</div>
+  <div class="fg animate-enter delay-3">
     <div class="fi"><div class="fic fic1">🔍</div><div class="fn">Automated EDA</div><div class="fd">Statistical profiling, null analysis, distributions and correlations — generated instantly on upload.</div></div>
     <div class="fi"><div class="fic fic2">🚨</div><div class="fn">Anomaly Detection</div><div class="fd">Identify unusual revenue spikes, drops and outliers using adaptive statistical thresholds.</div></div>
     <div class="fi"><div class="fic fic3">📈</div><div class="fn">Revenue Forecasting</div><div class="fd">Facebook Prophet delivers 30, 60, or 90-day projections with calibrated confidence intervals.</div></div>
@@ -123,10 +153,10 @@ st.markdown("""
 <div class="sdiv"></div>
 
 <div class="wfw" style="padding-top:5rem;">
-  <div class="sec-ey">How it works</div>
-  <div class="sec-h">Faster. Smarter.</div>
-  <div class="sec-s">Six steps from raw CSV to actionable intelligence. No setup, no configuration, no waiting.</div>
-  <div class="wg">
+  <div class="sec-ey animate-enter">How it works</div>
+  <div class="sec-h animate-enter delay-1">Faster. Smarter.</div>
+  <div class="sec-s animate-enter delay-2">Six steps from raw CSV to actionable intelligence. No setup, no configuration, no waiting.</div>
+  <div class="wg animate-enter delay-3">
     <div class="wc"><div class="wn">01</div><div class="wt">Upload CSV</div><div class="wd">Drop any sales, orders, or subscription CSV. Up to 50 MB. Column types detected automatically.</div></div>
     <div class="wc"><div class="wn">02</div><div class="wt">Auto-analyze</div><div class="wd">Quality scoring, EDA, anomaly detection and correlation analysis run instantly on upload.</div></div>
     <div class="wc"><div class="wn">03</div><div class="wt">Forecast revenue</div><div class="wd">Select date and value columns. Prophet generates projections with confidence bands.</div></div>
@@ -139,16 +169,48 @@ st.markdown("""
 <div class="sdiv"></div>
 
 <div class="ctaw" style="padding-top:5rem;">
-  <div class="cta-box">
+  <div class="cta-box animate-enter">
     <div>
-      <div class="cta-ey">Get started now</div>
-      <div class="cta-h">Ready to unlock<br>your revenue data?</div>
-      <div class="cta-s">Navigate to <strong style="color:#4ade80;">Upload</strong> in the left sidebar to load your first dataset.</div>
+      <div class="cta-ey animate-enter delay-1">Get started now</div>
+      <div class="cta-h animate-enter delay-2">Ready to unlock<br>your revenue data?</div>
+      <div class="cta-s animate-enter delay-3">Navigate to <strong style="color:#4ade80;">Upload</strong> in the left sidebar to load your first dataset.</div>
     </div>
-    <div class="cta-btn">Upload CSV &nbsp;→</div>
+    <a href="upload" target="_self" style="text-decoration:none;"><div class="cta-btn animate-enter delay-4">Upload CSV &nbsp;→</div></a>
   </div>
 </div>
 """, unsafe_allow_html=True)
 
 for k in ("dataset","dataset_clean","quality_report","filename","chat_history"):
     if k not in st.session_state: st.session_state[k] = None
+
+import streamlit.components.v1 as components
+components.html(
+    """
+    <script>
+    const parentDoc = window.parent.document;
+    
+    // Create an intersection observer
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                // Optional: unobserve if you only want it to animate once
+                // observer.unobserve(entry.target);
+            }
+        });
+    }, { 
+        root: null,
+        threshold: 0.15,
+        rootMargin: "0px 0px -50px 0px"
+    });
+
+    // We use a small delay to ensure Streamlit's React tree has rendered the markdown DOM
+    setTimeout(() => {
+        const elements = parentDoc.querySelectorAll('.animate-enter');
+        elements.forEach(el => observer.observe(el));
+    }, 500);
+    </script>
+    """,
+    height=0,
+    width=0
+)
