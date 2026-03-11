@@ -96,9 +96,9 @@ class RevenueForecaster(BaseModel):
     def _validate_input(self, data: pd.DataFrame) -> None:
         """Validate input data format."""
         if "ds" not in data.columns or "y" not in data.columns:
-            raise ValueError("Data must have 'ds' (date) and 'y' (value) columns")
+            raise ValueError(f"Data must have 'ds' (date) and 'y' (value) columns. Found: {data.columns.tolist()}")
         if len(data) < 14:
-            raise ValueError("Need at least 14 data points for forecasting")
+            raise ValueError(f"Need at least 14 data points for forecasting. Found: {len(data)}")
 
 
 def prepare_forecast_data(
@@ -119,13 +119,14 @@ def prepare_forecast_data(
     Returns:
         DataFrame with 'ds' and 'y' columns, resampled.
     """
-    ts = df[[date_col, value_col]].copy()
-    ts.columns = ["ds", "y"]
-    ts["ds"] = pd.to_datetime(ts["ds"])
+    ts = pd.DataFrame()
+    ts["ds"] = pd.to_datetime(df[date_col])
+    ts["ds"] = ts["ds"].dt.tz_convert(None) if ts["ds"].dt.tz is not None else ts["ds"]
+    ts["y"] = pd.to_numeric(df[value_col], errors="coerce").fillna(0).astype(float)
 
     # Resample to fill gaps
     ts = ts.set_index("ds").resample(freq).sum().reset_index()
-    ts = ts[ts["y"] > 0]  # Remove zero-revenue periods
+    ts = ts[ts["y"] >= 0].reset_index(drop=True)
 
     logger.info(f"Prepared forecast data: {len(ts)} periods ({freq})")
     return ts

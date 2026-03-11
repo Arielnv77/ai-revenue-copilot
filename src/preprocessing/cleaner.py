@@ -62,6 +62,8 @@ def handle_missing_values(
                 if len(mode_val) > 0:
                     df[col] = df[col].fillna(mode_val.iloc[0])
                     logger.info(f"Filled '{col}' missing values with mode ({mode_val.iloc[0]})")
+                else:
+                    logger.warning(f"Column '{col}' has all-NaN values; skipping mode imputation")
 
         # Datetime: forward fill
         date_cols = df.select_dtypes(include=["datetime64"]).columns
@@ -79,7 +81,11 @@ def handle_missing_values(
                 elif strategy == "median":
                     val = df[col].median()
                 else:
-                    val = df[col].mode().iloc[0] if len(df[col].mode()) > 0 else 0
+                    mode_series = df[col].mode()
+                    if len(mode_series) == 0:
+                        logger.warning(f"Column '{col}' has all-NaN values; skipping mode imputation")
+                        continue
+                    val = mode_series.iloc[0]
                 df[col] = df[col].fillna(val)
 
     return df

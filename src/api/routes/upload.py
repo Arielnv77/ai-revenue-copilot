@@ -12,6 +12,7 @@ from src.data.loader import load_csv, get_dataframe_profile
 from src.data.validator import validate_dataframe
 from src.data.schemas import UploadResponse
 from src.preprocessing.cleaner import run_cleaning_pipeline
+from src.utils.config import settings
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -32,9 +33,18 @@ async def upload_csv(request: Request, file: UploadFile = File(...)):
     # Read file content
     try:
         content = await file.read()
-        buffer = io.BytesIO(content)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error reading file: {e}")
+
+    # Enforce upload size limit
+    max_bytes = settings.max_upload_size_mb * 1024 * 1024
+    if len(content) > max_bytes:
+        raise HTTPException(
+            status_code=413,
+            detail=f"File too large. Maximum allowed size is {settings.max_upload_size_mb} MB.",
+        )
+
+    buffer = io.BytesIO(content)
 
     # Load CSV
     try:
@@ -49,7 +59,7 @@ async def upload_csv(request: Request, file: UploadFile = File(...)):
     df_clean = run_cleaning_pipeline(df.copy())
 
     # Generate unique ID and store
-    dataset_id = str(uuid.uuid4())[:8]
+    dataset_id = str(uuid.uuid4())
     request.app.state.datasets[dataset_id] = {
         "raw": df,
         "clean": df_clean,

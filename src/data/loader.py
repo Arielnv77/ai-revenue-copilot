@@ -2,6 +2,7 @@
 CSV Loader — Handles file reading with encoding detection and type inference.
 """
 
+import csv
 import io
 import logging
 from pathlib import Path
@@ -31,15 +32,18 @@ def detect_encoding(file_path: str | Path) -> str:
 
 
 def detect_separator(file_path: str | Path, encoding: str = "utf-8") -> str:
-    """Auto-detect CSV separator by inspecting the first few lines."""
-    separators = [",", ";", "\t", "|"]
-    with open(file_path, "r", encoding=encoding) as f:
+    """Auto-detect CSV separator using csv.Sniffer (handles quoted fields)."""
+    with open(file_path, "r", encoding=encoding, errors="replace") as f:
         sample = f.read(5_000)
 
-    counts = {sep: sample.count(sep) for sep in separators}
-    best_sep = max(counts, key=counts.get)
-    logger.info(f"Detected separator: {repr(best_sep)}")
-    return best_sep
+    try:
+        dialect = csv.Sniffer().sniff(sample, delimiters=",;\t|")
+        sep = dialect.delimiter
+        logger.info(f"Detected separator: {repr(sep)}")
+        return sep
+    except csv.Error:
+        logger.warning("csv.Sniffer could not detect separator, falling back to ','")
+        return ","
 
 
 def load_csv(
@@ -96,8 +100,7 @@ def load_csv(
                 sep=separator,
                 nrows=sample_rows,
                 on_bad_lines="warn",
-                engine="pyarrow",
-                dtype_backend="pyarrow"
+                engine="c"
             )
             # If successful, break out of loop
             break

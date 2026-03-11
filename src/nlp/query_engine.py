@@ -2,8 +2,10 @@
 Query Engine — Translates natural-language questions into pandas operations via LLM.
 """
 
+import ast
 import logging
 import re
+import threading
 from typing import Any, Optional
 
 import pandas as pd
@@ -130,18 +132,55 @@ class QueryEngine:
         """
         Safely execute pandas code on the loaded DataFrame.
 
-        Only allows read operations — no mutations, imports, or file access.
+        Validates via AST before execution (more robust than string matching)
+        and enforces a 10-second timeout via a daemon thread.
         """
-        # Security: block dangerous operations
-        blocked = ["import ", "exec(", "eval(", "open(", "__", "os.", "sys.", "subprocess"]
-        for pattern in blocked:
-            if pattern in code:
-                raise ValueError(f"Blocked operation: {pattern}")
+        # --- AST validation ---
+        try:
+            tree = ast.parse(code, mode="exec")
+        except SyntaxError as e:
+            raise ValueError(f"Invalid Python syntax: {e}") from e
 
-        # Execute in restricted namespace
-        namespace = {"df": self._df.copy(), "pd": pd}
-        exec(code, {"__builtins__": {}}, namespace)
-        return namespace.get("result", "Code executed successfully")
+        _BLOCKED_NODES = (
+            ast.Import,
+            ast.ImportFrom,
+            ast.FunctionDef,
+            ast.AsyncFunctionDef,
+            ast.ClassDef,
+            ast.Delete,
+            ast.Global,
+            ast.Nonlocal,
+        )
+        _BLOCKED_ATTRS = {
+            "to_csv", "to_pickle", "to_sql", "to_parquet", "to_excel",
+            "to_feather", "to_hdf", "to_json",
+            "__class__", "__subclasses__", "__globals__", "__builtins__",
+        }
+
+        for node in ast.walk(tree):
+            if isinstance(node, _BLOCKED_NODES):
+                raise ValueError(f"Blocked statement type: {type(node).__name__}")
+            if isinstance(node, ast.Attribute) and node.attr in _BLOCKED_ATTRS:
+                raise ValueError(f"Blocked attribute access: .{node.attr}")
+
+        # --- Timeout execution ---
+        namespace: dict[str, Any] = {"df": self._df.copy(), "pd": pd}
+        container: dict[str, Any] = {}
+
+        def _run() -> None:
+            exec(code, {"__builtins__": {}}, namespace)  # noqa: S102
+            container["value"] = namespace.get("result", "Code executed successfully")
+
+        thread = threading.Thread(target=_run, daemon=True)
+        thread.start()
+        thread.join(timeout=10)
+
+        if thread.is_alive():
+            raise TimeoutError("Code execution exceeded 10-second limit")
+        if "value" not in container:
+            raise RuntimeError("Execution produced no result")
+
+        return container["value"]
 
     def _build_context(self, df: pd.DataFrame) -> str:
         """Build context string for the LLM."""
