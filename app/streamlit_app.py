@@ -116,11 +116,11 @@ st.markdown("""
     <a href="dashboard" target="_self" style="text-decoration:none;"><span class="btn-s">My Document</span></a>
   </div>
   <div class="trust animate-enter delay-4">
-    <div class="ti"><div class="tc">✓</div>No setup required</div>
-    <div class="ti"><div class="tc">✓</div>Works with any CSV</div>
-    <div class="ti"><div class="tc">✓</div>ML models built-in</div>
-    <div class="ti"><div class="tc">✓</div>GPT-4o Q&amp;A</div>
-    <div class="ti"><div class="tc">✓</div>Export PDF reports</div>
+    <div class="ti"><div class="tc">·</div>No setup required</div>
+    <div class="ti"><div class="tc">·</div>Works with any CSV</div>
+    <div class="ti"><div class="tc">·</div>ML models built-in</div>
+    <div class="ti"><div class="tc">·</div>GPT-4o Q&amp;A</div>
+    <div class="ti"><div class="tc">·</div>Export PDF reports</div>
   </div>
 </div>
 
@@ -141,12 +141,12 @@ st.markdown("""
   <div class="sec-h animate-enter delay-1">Everything you need to<br>understand your revenue</div>
   <div class="sec-s animate-enter delay-2">Six integrated modules that work together from a single CSV. No pipelines. No configuration.</div>
   <div class="fg animate-enter delay-3">
-    <div class="fi"><div class="fic fic1">🔍</div><div class="fn">Automated EDA</div><div class="fd">Statistical profiling, null analysis, distributions and correlations — generated instantly on upload.</div></div>
-    <div class="fi"><div class="fic fic2">🚨</div><div class="fn">Anomaly Detection</div><div class="fd">Identify unusual revenue spikes, drops and outliers using adaptive statistical thresholds.</div></div>
-    <div class="fi"><div class="fic fic3">📈</div><div class="fn">Revenue Forecasting</div><div class="fd">Facebook Prophet delivers 30, 60, or 90-day projections with calibrated confidence intervals.</div></div>
-    <div class="fi"><div class="fic fic4">👥</div><div class="fn">Customer Segments</div><div class="fd">RFM scoring + KMeans maps every customer into Champions, At Risk, Lost and more automatically.</div></div>
-    <div class="fi"><div class="fic fic5">💬</div><div class="fn">Natural Language Q&amp;A</div><div class="fd">Ask any business question. GPT-4o writes and executes the Python, then explains the result.</div></div>
-    <div class="fi"><div class="fic fic6">📄</div><div class="fn">PDF Reports</div><div class="fd">Export a complete analysis report with all charts and insights ready for board decks.</div></div>
+    <div class="fi"><div class="fic fic1">EDA</div><div class="fn">Automated EDA</div><div class="fd">Statistical profiling, null analysis, distributions and correlations — generated instantly on upload.</div></div>
+    <div class="fi"><div class="fic fic2">ML</div><div class="fn">Anomaly Detection</div><div class="fd">Identify unusual revenue spikes, drops and outliers using adaptive statistical thresholds.</div></div>
+    <div class="fi"><div class="fic fic3">FCST</div><div class="fn">Revenue Forecasting</div><div class="fd">Facebook Prophet delivers 30, 60, or 90-day projections with calibrated confidence intervals.</div></div>
+    <div class="fi"><div class="fic fic4">SEG</div><div class="fn">Customer Segments</div><div class="fd">RFM scoring + KMeans maps every customer into Champions, At Risk, Lost and more automatically.</div></div>
+    <div class="fi"><div class="fic fic5">Q&A</div><div class="fn">Natural Language Q&amp;A</div><div class="fd">Ask any business question. GPT-4o writes and executes the Python, then explains the result.</div></div>
+    <div class="fi"><div class="fic fic6">PDF</div><div class="fn">PDF Reports</div><div class="fd">Export a complete analysis report with all charts and insights ready for board decks.</div></div>
   </div>
 </div>
 

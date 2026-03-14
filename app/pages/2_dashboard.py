@@ -35,7 +35,7 @@ PL=dict(template="plotly_dark",paper_bgcolor="rgba(0,0,0,0)",plot_bgcolor="rgba(
 t1,t2,t3,t4=st.tabs(["Time Series","Distributions","Correlations","Summary Stats"])
 
 with t1:
-    if not dc: st.markdown('<div class="rc-empty"><span class="rc-empty-icon">📅</span><div class="rc-empty-ttl">No date columns</div></div>',unsafe_allow_html=True)
+    if not dc: st.markdown('<div class="rc-empty"><span class="rc-empty-icon">–</span><div class="rc-empty-ttl">No date columns</div></div>',unsafe_allow_html=True)
     else:
         st.markdown('<div class="rc-ctrl"><div class="rc-ctrl-ttl">Configuration</div>',unsafe_allow_html=True)
         c1,c2,c3=st.columns(3)
@@ -46,7 +46,7 @@ with t1:
         try:
             ts=aggregate_revenue_by_period(df,sd,sv,sp); pl={"D":"days","W":"weeks","M":"months"}[sp]
             st.markdown(f"""<div class="rc-strip"><div class="rc-scell"><div class="rc-slbl">Total</div><div class="rc-sval">{ts['revenue_sum'].sum():,.0f}</div></div><div class="rc-scell"><div class="rc-slbl">Peak</div><div class="rc-sval">{ts['revenue_sum'].max():,.0f}</div></div><div class="rc-scell"><div class="rc-slbl">Avg</div><div class="rc-sval">{ts['revenue_sum'].mean():,.0f}</div></div><div class="rc-scell"><div class="rc-slbl">Periods</div><div class="rc-sval">{len(ts)} {pl}</div></div></div>""",unsafe_allow_html=True)
-            fig=revenue_time_series(ts,"date","revenue_sum"); fig.update_layout(**PL); st.plotly_chart(fig,width='stretch',theme=None)
+            fig=revenue_time_series(ts,"date","revenue_sum"); fig.update_layout(**PL); st.plotly_chart(fig,use_container_width=True,theme=None)
         except Exception as e: st.markdown(f'<div class="rc-err"><div class="rc-err-ttl">Chart error</div><div class="rc-err-body">{e}</div></div>',unsafe_allow_html=True)
 
 with t2:
@@ -58,30 +58,30 @@ with t2:
             for lbl,val in [("Count",f"{len(s):,}"),("Mean",f"{s.mean():,.2f}"),("Median",f"{s.median():,.2f}"),("Std",f"{s.std():,.2f}"),("Min",f"{s.min():,.2f}"),("Max",f"{s.max():,.2f}")]:
                 st.markdown(f"""<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:0.8rem;"><span style="color:#4a7c59;">{lbl}</span><span style="color:#ffffff;font-weight:500;">{val}</span></div>""",unsafe_allow_html=True)
         with cr:
-            try: fig=distribution_chart(df,sc); fig.update_layout(**PL); st.plotly_chart(fig,width='stretch',theme=None)
+            try: fig=distribution_chart(df,sc); fig.update_layout(**PL); st.plotly_chart(fig,use_container_width=True,theme=None)
             except Exception as e: st.markdown(f'<div class="rc-err"><div class="rc-err-body">{e}</div></div>',unsafe_allow_html=True)
 
 with t3:
-    if len(nc)<2: st.markdown('<div class="rc-empty"><span class="rc-empty-icon">🔗</span><div class="rc-empty-ttl">Need 2+ numeric columns</div></div>',unsafe_allow_html=True)
+    if len(nc)<2: st.markdown('<div class="rc-empty"><span class="rc-empty-icon">–</span><div class="rc-empty-ttl">Need 2+ numeric columns</div></div>',unsafe_allow_html=True)
     else:
         cl,cr=st.columns([1,3],gap="large")
         with cl: cs=st.multiselect("Columns",nc,default=nc[:min(8,len(nc))],key="corr_c")
         with cr:
             if len(cs)>=2:
-                try: fig=correlation_heatmap(df[cs]); fig.update_layout(**PL); st.plotly_chart(fig,width='stretch',theme=None)
+                try: fig=correlation_heatmap(df[cs]); fig.update_layout(**PL); st.plotly_chart(fig,use_container_width=True,theme=None)
                 except Exception as e: st.markdown(f'<div class="rc-err"><div class="rc-err-body">{e}</div></div>',unsafe_allow_html=True)
 
 with t4:
     it1,it2,it3=st.tabs(["Numeric","Categorical","Raw data"])
     with it1:
-        if nc: st.dataframe(df[nc].describe().round(3),width='stretch')
+        if nc: st.table(df[nc].describe().round(3))
     with it2:
         for c in cc[:5]:
             with st.expander(f"{c} — {df[c].nunique()} unique values"):
                 vc=df[c].value_counts().reset_index(); vc.columns=[c,"count"]; vc["pct"]=(vc["count"]/len(df)*100).round(1)
-                st.dataframe(vc.head(20),width='stretch')
+                st.table(vc.head(20))
     with it3:
-        n=st.slider("Rows",5,200,25,key="raw_n"); st.dataframe(df.head(n),width='stretch')
+        n=st.slider("Rows",5,200,25,key="raw_n"); st.table(df.head(n))
 
 st.markdown(f'<div class="rc-footer"><span>RevenueOS · Dashboard</span><span>{df.shape[0]:,} rows · {df.shape[1]} cols</span></div>',unsafe_allow_html=True)
 st.markdown('</div>',unsafe_allow_html=True)

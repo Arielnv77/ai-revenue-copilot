@@ -3,6 +3,7 @@ import streamlit as st, pandas as pd, sys, gc
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from src.data.loader import load_csv, get_dataframe_profile
+from scripts.generate_sample_data import generate_sample_data
 from src.data.validator import validate_dataframe
 from src.preprocessing.cleaner import run_cleaning_pipeline
 st.set_page_config(page_title="Upload | RevenueOS", page_icon="app/assets/logo.png", layout="wide")
@@ -27,6 +28,8 @@ col_up, col_info = st.columns([1.7, 1], gap="large")
 with col_up:
     st.markdown('<div style="font-size:0.67rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#4a7c59;margin-bottom:0.75rem;">Import file</div>', unsafe_allow_html=True)
     uploaded_file = st.file_uploader("Drop CSV here", type=["csv"], label_visibility="collapsed")
+    st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)
+    demo_clicked = st.button("Load demo dataset", use_container_width=True, help="Generates a 5 000-row retail CSV and loads it instantly — no upload needed.")
 
 with col_info:
     st.markdown("""
@@ -39,6 +42,22 @@ with col_info:
   </div>
 </div>
 """, unsafe_allow_html=True)
+
+# --- Demo dataset shortcut ---
+if demo_clicked and "dataset_clean" not in st.session_state:
+    with st.spinner("Generating demo dataset…"):
+        import io
+        _demo_path = Path(__file__).resolve().parents[2] / "data" / "sample" / "online_retail_sample.csv"
+        generate_sample_data(num_rows=5000, output_path=str(_demo_path))
+        df = load_csv(str(_demo_path))
+        qr = validate_dataframe(df)
+        st.session_state.quality_report = qr
+        df = run_cleaning_pipeline(df)
+        st.session_state.dataset_clean = df
+        st.session_state.dataset = None
+        st.session_state.filename = "online_retail_sample.csv"
+        del df; gc.collect()
+    st.success("Demo dataset loaded — 5 000 rows of UK online retail data.")
 
 if uploaded_file is not None:
     with st.spinner("Profiling and cleaning dataset…"):
@@ -60,7 +79,7 @@ if uploaded_file is not None:
     profile = get_dataframe_profile(df); score = qr.quality_score
 
     st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown(f"""<div style="background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.20);border-radius:var(--r-md);padding:0.9rem 1.4rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;"><div style="display:flex;align-items:center;gap:10px;"><span>✅</span><div><div style="font-size:0.85rem;font-weight:600;color:#4ade80;">{uploaded_file.name}</div><div style="font-size:0.75rem;color:#4a7c59;">{profile['rows']:,} rows · {profile['columns']} columns · {profile['memory_mb']} MB</div></div></div><span class="rc-tag green">Loaded</span></div>""", unsafe_allow_html=True)
+    st.markdown(f"""<div style="background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.20);border-radius:var(--r-md);padding:0.9rem 1.4rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;"><div style="display:flex;align-items:center;gap:10px;"><span></span><div><div style="font-size:0.85rem;font-weight:600;color:#4ade80;">{uploaded_file.name}</div><div style="font-size:0.75rem;color:#4a7c59;">{profile['rows']:,} rows · {profile['columns']} columns · {profile['memory_mb']} MB</div></div></div><span class="rc-tag green">Loaded</span></div>""", unsafe_allow_html=True)
 
     k1,k2,k3,k4 = st.columns(4)
     k1.metric("Rows",f"{profile['rows']:,}"); k2.metric("Columns",f"{profile['columns']}")
@@ -72,7 +91,7 @@ if uploaded_file is not None:
     t1,t2,t3 = st.tabs(["Data Preview","Column Inspector","Quality Report"])
     with t1:
         n = st.slider("Rows",5,100,20,key="pn")
-        st.dataframe(df.head(n),width='stretch')
+        st.table(df.head(n))
     with t2:
         for cn in df.columns:
             s=df[cn]; dtype=str(s.dtype); np=s.isnull().mean()*100
@@ -83,8 +102,8 @@ if uploaded_file is not None:
     with t3:
         report = qr.to_dict()
         if report["warnings"]:
-            for w in report["warnings"]: st.markdown(f"""<div style="background:rgba(234,179,8,0.07);border:1px solid rgba(234,179,8,0.20);border-radius:8px;padding:8px 14px;font-size:0.82rem;color:#facc15;margin-bottom:5px;">⚠ {w}</div>""", unsafe_allow_html=True)
-        else: st.markdown("""<div style="background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.20);border-radius:10px;padding:0.9rem 1.25rem;display:flex;align-items:center;gap:10px;"><span>✅</span><span style="font-size:0.85rem;font-weight:600;color:#4ade80;">No quality issues detected</span></div>""", unsafe_allow_html=True)
+            for w in report["warnings"]: st.markdown(f"""<div style="background:rgba(234,179,8,0.07);border:1px solid rgba(234,179,8,0.20);border-radius:8px;padding:8px 14px;font-size:0.82rem;color:#facc15;margin-bottom:5px;">Warning: {w}</div>""", unsafe_allow_html=True)
+        else: st.markdown("""<div style="background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.20);border-radius:10px;padding:0.9rem 1.25rem;display:flex;align-items:center;gap:10px;"><span></span><span style="font-size:0.85rem;font-weight:600;color:#4ade80;">No quality issues detected</span></div>""", unsafe_allow_html=True)
         if report.get("missing_pct"):
             st.markdown("<br>",unsafe_allow_html=True)
             st.markdown('<div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#4a7c59;margin-bottom:0.75rem;">Missing values</div>',unsafe_allow_html=True)

@@ -1,85 +1,156 @@
-#  RevenueOS
+# RevenueOS
 
-![Python](https://img.shields.io/badge/Python-3.13-blue.svg)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-009688.svg)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.32.0-FF4B4B.svg)
-![Prophet](https://img.shields.io/badge/Prophet-1.1.5-brightgreen.svg)
+[![CI — Tests](https://github.com/yourusername/revenueos/actions/workflows/tests.yml/badge.svg)](https://github.com/yourusername/revenueos/actions/workflows/tests.yml)
+![Python](https://img.shields.io/badge/Python-3.11-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115.0-009688.svg)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.41.0-FF4B4B.svg)
+![Prophet](https://img.shields.io/badge/Prophet-1.1.6-brightgreen.svg)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-46E3B7?logo=render)](https://revenueos.onrender.com)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-> **Enterprise-grade SaaS for Automated Revenue Intelligence, ML Forecasting, and Natural Language Data Querying.**
+> Transforms raw sales CSV data into actionable revenue intelligence in under 60 seconds — no code required.
 
-RevenueOS transforms raw sales data (CSV) into strategic intelligence in under 60 seconds without requiring any code or complex pipelines. It combines classical Machine Learning (time-series forecasting & clustering) with Generative AI to provide a complete "Analyst-in-a-box" experience.
-
----
-
-##  Key Features
-
-1. **Upload & Auto-EDA **: Drop any sales CSV. The system auto-detects encoding (with multi-fallback support), infers schemas, runs data quality checks, and generates a Quality Score.
-2. **Interactive Dashboard **: Auto-generated Plotly visualizations. Explores distributions, correlation heatmaps, and aggregations automatically.
-3. **Revenue Forecasting **: Powered by **Facebook Prophet**. Automatically handles trends and weekly/yearly seasonality to project revenue up to 90 days ahead with confidence intervals.
-4. **Customer Segments **: Mathematical profiling combining **RFM Analysis** (Recency, Frequency, Monetary) with **KMeans Clustering** to build behavioral customer segments (Champions, At-Risk, Loyalists).
-5. **Ask Your Data (GenAI Q&A) **: A natural language query engine using GPT-4o. The AI dynamically generates Pandas Python code to answer plain-English business questions and executes it securely.
+RevenueOS combines classical ML (time-series forecasting, clustering, anomaly detection) with Generative AI to deliver a complete "Analyst-in-a-box" experience directly in the browser.
 
 ---
 
-##  Architecture
+## Key Features
 
-The project is decoupled into a robust backend and a modern frontend:
-
-- **Backend / API engine (`src/`)**: Built on **FastAPI**. Exposes REST endpoints for model inference, data processing, and AI queries.
-- **Frontend (`app/`)**: Built on **Streamlit** but radically styled with a custom CSS design system to mirror premium SaaS aesthetics (Dark mode, glassmorphism, responsive grids).
-
-### The "BYOK" (Bring Your Own Key) LLM Strategy
-For the **Ask Your Data** feature, the system implements a **BYOK** architecture. Since LLM queries incur token costs, users must provide their own `OPENAI_API_KEY` via the `.env` file to activate the Q&A feature. 
-> *Future Scalability Note: The `QueryEngine` interface in `src/nlp` is designed to be model-agnostic. It can be easily swapped from OpenAI to open-source alternatives like LLaMA 3 via Groq for cost-free production deployment.*
+1. **Upload & Auto-EDA** — Drop any sales CSV. Auto-detects encoding (multi-fallback), infers schemas, runs data quality checks, and generates a Quality Score (0-100).
+2. **Interactive Dashboard** — Auto-generated Plotly visualizations: distributions, correlation heatmaps, time-series, and category breakdowns.
+3. **Revenue Forecasting** — Facebook Prophet with weekly/yearly seasonality. Projects revenue up to 365 days ahead with 95% confidence intervals.
+4. **Customer Segmentation** — RFM Analysis (Recency, Frequency, Monetary) combined with KMeans Clustering. Produces business-friendly segment labels (Champions, At-Risk, Loyal, etc.).
+5. **Ask Your Data (GenAI Q&A)** — Natural language query engine via GPT-4o-mini or Groq (LLaMA 3.1-70b). Generates and safely executes Pandas code. Supports BYOK (Bring Your Own Key).
+6. **PDF Export** — Full analysis report: Quality Score, EDA summary, forecast results, and segment profiles — downloadable in one click.
 
 ---
 
-##  Quickstart (Local Development)
+## Architecture
+
+```
+                              ┌─────────────────────────────────┐
+                              │         Streamlit Frontend        │
+                              │           app/pages/              │
+                              │  1_upload  2_dashboard  3_forecast│
+                              │  4_segments  5_chat  6_report     │
+                              └────────────┬────────────────────┘
+                                           │  direct Python calls
+                              ┌────────────▼────────────────────┐
+                              │         FastAPI Backend           │
+                              │           src/api/                │
+                              │  POST /upload   GET /analysis     │
+                              │  GET /forecast  POST /query       │
+                              └──┬─────────┬──────────┬─────────┘
+                                 │         │          │
+                    ┌────────────▼──┐  ┌───▼──────┐  ┌▼──────────────┐
+                    │  src/data/    │  │src/models│  │  src/nlp/     │
+                    │  loader.py    │  │forecaster│  │  query_engine │
+                    │  validator.py │  │segmentat.│  │  (OpenAI/Groq)│
+                    │  schemas.py   │  │anomaly   │  └───────────────┘
+                    └───────────────┘  └──────────┘
+                                 │
+                    ┌────────────▼─────────────────┐
+                    │      src/preprocessing/       │
+                    │  cleaner · feature_eng · xform│
+                    └──────────────────────────────┘
+                                 │
+                    ┌────────────▼─────────────────┐
+                    │    src/visualization/         │
+                    │  charts.py (Plotly)           │
+                    │  report.py (fpdf2 PDF export) │
+                    └──────────────────────────────┘
+```
+
+### BYOK (Bring Your Own Key) LLM Strategy
+
+The **Ask Your Data** feature supports two LLM providers, selectable from the sidebar:
+
+| Provider | Model | Cost |
+|----------|-------|------|
+| OpenAI | gpt-4o-mini | ~$0.001/query |
+| Groq | llama-3.1-70b-versatile | Free tier available |
+
+Both providers share the same `QueryEngine` interface. Users supply their API key via `.env`.
+
+---
+
+## Quickstart (Local Development)
 
 ### 1. Clone & Setup
 ```bash
 git clone https://github.com/yourusername/revenueos.git
 cd revenueos
 
-# Create virtual environment
-python3.13 -m venv venv
+python3.11 -m venv venv
 source venv/bin/activate
 
-# Install dependencies
 pip install -r requirements.txt
 ```
 
 ### 2. Configure Environment
 ```bash
 cp .env.example .env
+# Add OPENAI_API_KEY or GROQ_API_KEY to activate Q&A
 ```
-*(Optional)* Add your `OPENAI_API_KEY` inside `.env` if you want to use the Chat features.
 
 ### 3. Run the complete stack
-You need two terminal instances (one for the Backend API, one for the Frontend Web App).
 
-**Terminal 1 (Backend):**
+**Terminal 1 — Backend:**
 ```bash
-source venv/bin/activate
 uvicorn src.api.main:app --host 127.0.0.1 --port 8000
 ```
 
-**Terminal 2 (Frontend):**
+**Terminal 2 — Frontend:**
 ```bash
-source venv/bin/activate
 streamlit run app/streamlit_app.py --server.port 8501
 ```
 
-> **Note:** Open your browser at `http://localhost:8501` to use the application. A sample dataset script is provided: run `python scripts/generate_sample_data.py` to generate a 5k row dataset for testing.
+Open **http://localhost:8501** — or use the **Load demo dataset** button on the Upload page to start immediately without uploading a file.
 
 ---
 
-##  Testing
-The codebase has 100% core test coverage using `pytest`, testing everything from the data cleaning pipeline and ML model instantiation to API endpoints.
+## Testing
+
 ```bash
 pytest tests/ -v
+pytest tests/ --cov=src   # with coverage
 ```
 
-##  License
+CI runs automatically on every push to `main` and on all pull requests via GitHub Actions.
+
+---
+
+## Deployment (Render)
+
+The app is containerized with Docker (Python 3.11-slim). `start.sh` launches both services:
+
+```bash
+# Backend (port 8000)
+uvicorn src.api.main:app --host 0.0.0.0 --port 8000 &
+# Frontend (PORT env var from Render)
+streamlit run app/streamlit_app.py --server.port $WEB_PORT --server.address 0.0.0.0
+```
+
+Required environment variables on Render:
+- `OPENAI_API_KEY` *(optional — activates OpenAI Q&A)*
+- `GROQ_API_KEY` *(optional — activates Groq Q&A)*
+- `WEB_PORT` *(set automatically by Render)*
+
+---
+
+## Roadmap
+
+The following features are planned but not yet implemented:
+
+- [ ] **Authentication** — User login / multi-tenant isolation (Auth0 or Supabase)
+- [ ] **Persistent storage** — PostgreSQL / S3 for datasets and reports (currently in-memory)
+- [ ] **Scheduled forecasts** — Cron-based auto-refresh of predictions
+- [ ] **Anomaly alerts** — Email/Slack notifications when anomalies are detected
+- [ ] **Multi-file joins** — Upload and join multiple CSVs before analysis
+- [ ] **Custom segment labels** — User-defined business labels for clusters
+
+---
+
+## License
+
 MIT License. See `LICENSE` for details.

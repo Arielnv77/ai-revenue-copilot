@@ -20,8 +20,9 @@ class Settings(BaseSettings):
     api_host: str = "0.0.0.0"
     api_port: int = 8000
 
-    # OpenAI
+    # LLM providers
     openai_api_key: Optional[str] = None
+    groq_api_key:   Optional[str] = None
 
     # Data
     max_upload_size_mb: int = 50

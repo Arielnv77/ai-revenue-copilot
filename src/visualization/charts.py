@@ -151,9 +151,10 @@ def rfm_scatter(
     df: pd.DataFrame,
     title: str = "RFM Customer Map",
 ) -> go.Figure:
-    """3D scatter plot of RFM segments."""
+    """3D scatter plot of RFM segments. Samples max 10,000 rows for performance."""
+    plot_df = df if len(df) <= 10000 else df.sample(10000, random_state=42)
     fig = px.scatter_3d(
-        df, x="recency", y="frequency", z="monetary",
+        plot_df, x="recency", y="frequency", z="monetary",
         color="segment_label",
         title=title,
         color_discrete_sequence=PALETTE,
@@ -194,9 +195,10 @@ def distribution_chart(
     column: str,
     title: Optional[str] = None,
 ) -> go.Figure:
-    """Histogram with KDE for a numeric column."""
+    """Histogram with KDE for a numeric column. Samples max 20,000 rows for performance."""
+    plot_df = df if len(df) <= 20000 else df.sample(20000, random_state=42)
     fig = px.histogram(
-        df, x=column,
+        plot_df, x=column,
         title=title or f"Distribution of {column}",
         nbins=50,
         color_discrete_sequence=[COLORS["primary"]],
