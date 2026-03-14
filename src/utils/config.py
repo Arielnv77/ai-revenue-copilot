@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     groq_api_key:   Optional[str] = None
 
     # Data
-    max_upload_size_mb: int = 50
+    max_upload_size_mb: int = 200
     allowed_extensions: str = "csv"
     data_dir: Path = Path("data")
 

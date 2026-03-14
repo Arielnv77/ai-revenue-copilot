@@ -61,9 +61,17 @@ if demo_clicked and "dataset_clean" not in st.session_state:
 
 if uploaded_file is not None:
     with st.spinner("Profiling and cleaning dataset…"):
-        df = load_csv(uploaded_file)
+        # Large-file guard: auto-sample files > 50 MB to 200 K rows
+        _MAX_ROWS = 200_000
+        _MAX_BYTES = 50 * 1024 * 1024
+        _file_size = uploaded_file.size
+        _sampled = _file_size > _MAX_BYTES
+
+        df = load_csv(uploaded_file, sample_rows=_MAX_ROWS if _sampled else None)
         qr = validate_dataframe(df)
         st.session_state.quality_report = qr
+        st.session_state.file_sampled = _sampled
+        st.session_state.file_size_mb = round(_file_size / 1_048_576, 1)
         
         # Process clean data and clear raw memory
         df = run_cleaning_pipeline(df)
@@ -76,8 +84,12 @@ if uploaded_file is not None:
         gc.collect()
         
     df = st.session_state.dataset_clean
-    profile = get_dataframe_profile(df); score = qr.quality_score
 
+    # Sampling notice
+    if st.session_state.get("file_sampled"):
+        _sz = st.session_state.get("file_size_mb", "?")
+        st.markdown(f"""<div style="background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.3);border-radius:8px;padding:0.75rem 1.1rem;margin-bottom:1rem;font-size:0.82rem;color:#fbbf24;">
+        <strong>Large file — representative sample loaded.</strong> Original file: {_sz} MB. Loaded first 200,000 rows for performance. All analysis runs on this sample.</div>""", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown(f"""<div style="background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.20);border-radius:var(--r-md);padding:0.9rem 1.4rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;"><div style="display:flex;align-items:center;gap:10px;"><span></span><div><div style="font-size:0.85rem;font-weight:600;color:#4ade80;">{uploaded_file.name}</div><div style="font-size:0.75rem;color:#4a7c59;">{profile['rows']:,} rows · {profile['columns']} columns · {profile['memory_mb']} MB</div></div></div><span class="rc-tag green">Loaded</span></div>""", unsafe_allow_html=True)
 
