@@ -16,6 +16,13 @@ SHARED = f"<style>{_css}</style>"
 def render_sidebar(filename=None, nrows=None, ncols=None):
     import streamlit as st
 
+    # Read dataset state from session if not passed explicitly
+    if filename is None and "dataset_clean" in st.session_state:
+        df = st.session_state.dataset_clean
+        filename = st.session_state.get("filename", "dataset.csv")
+        nrows = nrows or (df.shape[0] if df is not None else 0)
+        ncols = ncols or (df.shape[1] if df is not None else 0)
+
     # Load logo at runtime — avoids hardcoding 73KB of base64 in source
     _logo_b64 = base64.b64encode((_ASSETS / "logo.png").read_bytes()).decode()
 
