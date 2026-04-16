@@ -3,19 +3,20 @@ import streamlit as st, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from src.visualization.report import generate_pdf_report
+from _i18n import t
 st.set_page_config(page_title="Report | RevenueOS", page_icon="app/assets/logo.png", layout="wide")
 from _shared_css import SHARED; from _sidebar import render_sidebar
 st.markdown(SHARED, unsafe_allow_html=True); render_sidebar()
 
 st.markdown('<div class="rc-page">',unsafe_allow_html=True)
-st.markdown("""<div class="rc-page-hd"><div><div class="rc-title">Export Report</div><div class="rc-sub">Download a full PDF — Quality Score · EDA · Forecast · Segments</div></div><span class="rc-tag blue">PDF</span></div>""",unsafe_allow_html=True)
+st.markdown("""<div class="rc-page-hd"><div><div class="rc-title>{t("report_title")}</div><div class="rc-sub">{t("report_sub")}</div></div><span class="rc-tag blue">PDF</span></div>""",unsafe_allow_html=True)
 
 df   = st.session_state.get("dataset_clean")
 qr   = st.session_state.get("quality_report")
 fname= st.session_state.get("filename","dataset.csv")
 
 if df is None:
-    st.markdown("""<div class="rc-empty"><span class="rc-empty-icon">–</span><div class="rc-empty-ttl">No dataset loaded</div><div class="rc-empty-sub">Upload a CSV on the Upload page first, then come back to generate your report.</div></div>""",unsafe_allow_html=True)
+    st.markdown(f"""<div class="rc-empty"><span class="rc-empty-icon">–</span><div class="rc-empty-ttl">{t("no_dataset_loaded")}</div><div class="rc-empty-sub">{t("report_upload_first")}</div></div>""",unsafe_allow_html=True)
 else:
     from src.data.validator import validate_dataframe
     from src.data.loader import get_dataframe_profile
@@ -58,22 +59,22 @@ else:
     # ── UI ────────────────────────────────────────────────────────────────────
     bc = "#4ade80" if score>=80 else "#facc15" if score>=60 else "#f87171"
     c1, c2, c3 = st.columns(3)
-    c1.metric("Rows",          f"{profile['rows']:,}")
-    c2.metric("Columns",       f"{profile['columns']}")
-    c3.metric("Quality Score", f"{score:.0f}/100")
+    c1.metric(t("rows"),          f"{profile['rows']:,}")
+    c2.metric(t("columns"),       f"{profile['columns']}")
+    c3.metric(t("quality_score"), f"{score:.0f}/100")
 
     st.markdown("<br>",unsafe_allow_html=True)
 
     # Optional sections info
-    st.markdown("""<div class="rc-card"><div class="rc-card-hd"><span class="rc-card-ttl">Report Contents</span></div>
+    st.markdown(f"""<div class="rc-card"><div class="rc-card-hd"><span class="rc-card-ttl">{t("report_contents")}</span></div>
 <div style="padding:1.25rem 1.5rem;color:#a0aec0;font-size:0.85rem;line-height:1.9;">
-  <b style="color:#fff">Always included:</b><br>
+  <b style="color:#fff">{t("always_included")}</b><br>
   &nbsp;· &nbsp;Cover page — filename, timestamp, quality score badge<br>
   &nbsp;· &nbsp;Dataset overview — shape, dtypes, memory<br>
   &nbsp;· &nbsp;Numeric column statistics table<br>
   &nbsp;· &nbsp;Missing data breakdown<br>
   &nbsp;· &nbsp;Quality warnings list<br>
-  <br><b style="color:#fff">Included if available (run those pages first):</b><br>
+  <br><b style="color:#fff">{t("if_available")}</b><br>
   &nbsp;· &nbsp;Forecast summary + sample table (run Forecast page)<br>
   &nbsp;· &nbsp;Segment profile table (run Segments page)<br>
 </div></div>""", unsafe_allow_html=True)
@@ -115,8 +116,8 @@ else:
             pass
 
     # Generate button
-    if st.button("Generate & Download PDF Report", type="primary", use_container_width=True):
-        with st.spinner("Building PDF…"):
+    if st.button(t("generate_pdf"), type="primary", use_container_width=True):
+        with st.spinner(t("building_pdf")):
             try:
                 pdf_bytes = generate_pdf_report(
                     analysis_data=analysis_data,
@@ -125,7 +126,7 @@ else:
                 )
                 ts = __import__("datetime").datetime.now().strftime("%Y%m%d_%H%M")
                 st.download_button(
-                    label="Download Report PDF",
+                    label=t("download_pdf"),
                     data=pdf_bytes,
                     file_name=f"revenueos_report_{ts}.pdf",
                     mime="application/pdf",
