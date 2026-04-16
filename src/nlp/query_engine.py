@@ -34,8 +34,12 @@ class QueryEngine:
     # Default models per provider
     _MODELS: dict[str, str] = {
         "openai": "gpt-4o-mini",
-        "groq":   "llama-3.1-70b-versatile",
+        "groq":   "llama-3.3-70b-versatile",
     }
+    _GROQ_FALLBACK_MODELS: tuple[str, ...] = (
+        "llama-3.3-70b-versatile",
+        "llama-3.1-8b-instant",
+    )
 
     def __init__(
         self,
@@ -134,16 +138,25 @@ class QueryEngine:
             if self._client is None:
                 self._client = Groq(api_key=self.api_key)
 
-            response = self._client.chat.completions.create(
-                model=self._MODELS["groq"],
-                messages=[
-                    {"role": "system",  "content": system},
-                    {"role": "user",    "content": user_message},
-                ],
-                temperature=0.2,
-                max_tokens=1000,
-            )
-            return response.choices[0].message.content or ""
+            last_error: Exception | None = None
+            for model_name in self._GROQ_FALLBACK_MODELS:
+                try:
+                    response = self._client.chat.completions.create(
+                        model=model_name,
+                        messages=[
+                            {"role": "system",  "content": system},
+                            {"role": "user",    "content": user_message},
+                        ],
+                        temperature=0.2,
+                        max_tokens=1000,
+                    )
+                    return response.choices[0].message.content or ""
+                except Exception as model_error:
+                    last_error = model_error
+                    logger.warning("Groq model '%s' failed: %s", model_name, model_error)
+                    continue
+
+            raise RuntimeError(f"All Groq fallback models failed: {last_error}")
 
         except ImportError:
             logger.error("groq package not installed")

@@ -58,8 +58,11 @@ Natural language Q&A.
 ```json
 {
   "dataset_id": "abc12345",
-  "question": "What is the total revenue?"
+  "question": "What is the total revenue?",
+  "provider": "groq"
 }
 ```
+
+`provider` is optional (`openai` or `groq`). If omitted, the backend auto-selects the first configured provider.
 
 **Response:** Answer, code, insight.

@@ -28,14 +28,34 @@ async def natural_language_query(request: Request, body: QueryRequest):
 
     df = datasets[body.dataset_id]["clean"]
 
-    if not settings.openai_api_key:
+    selected_provider = body.provider
+    if selected_provider is None:
+        if body.api_key:
+            selected_provider = "groq"
+        elif settings.openai_api_key:
+            selected_provider = "openai"
+        elif settings.groq_api_key:
+            selected_provider = "groq"
+        else:
+            raise HTTPException(
+                status_code=503,
+                detail=(
+                    "No LLM API key configured. Set OPENAI_API_KEY or GROQ_API_KEY in .env"
+                ),
+            )
+
+    api_key = body.api_key or (
+        settings.openai_api_key if selected_provider == "openai" else settings.groq_api_key
+    )
+    if not api_key:
+        missing_var = "OPENAI_API_KEY" if selected_provider == "openai" else "GROQ_API_KEY"
         raise HTTPException(
             status_code=503,
-            detail="OpenAI API key not configured. Set OPENAI_API_KEY in .env",
+            detail=f"{selected_provider.title()} API key not configured. Set {missing_var} in .env",
         )
 
     try:
-        engine = QueryEngine(api_key=settings.openai_api_key)
+        engine = QueryEngine(api_key=api_key, provider=selected_provider)
         engine.load_data(df)
         result = engine.ask(body.question)
 

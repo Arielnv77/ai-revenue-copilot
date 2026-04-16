@@ -3,7 +3,7 @@ Pydantic Schemas — Data contracts for API requests and responses.
 """
 
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -126,6 +126,14 @@ class QueryRequest(BaseModel):
     """Natural language query request."""
     dataset_id: str
     question: str = Field(..., min_length=3, max_length=1000)
+    provider: Optional[Literal["openai", "groq"]] = Field(
+        default=None,
+        description="Optional LLM provider override. If omitted, backend auto-selects an available provider.",
+    )
+    api_key: Optional[str] = Field(
+        default=None,
+        description="Optional BYOK key for this request only (not persisted server-side).",
+    )
 
 
 class QueryResponse(BaseModel):
