@@ -31,21 +31,24 @@ Rules:
 QUERY_TEMPLATE = """Question: {question}
 
 Based on the dataset, provide:
-1. The pandas code to answer this question
-2. A clear, business-friendly answer
+1. The pandas code that computes the answer and assigns it to `result`
+2. A business-friendly answer — use the exact token [RESULT] as a placeholder where the computed value should appear (it will be replaced automatically)
 3. One actionable insight or recommendation
 
-Format your response as:
+Format your response EXACTLY as:
 **Code:**
 ```python
-result = <your pandas code>
+result = <your pandas expression>
 ```
 
 **Answer:**
-<your answer here>
+<your answer, using [RESULT] where the number/value goes>
 
 **Insight:**
-<your recommendation here>
+<one actionable recommendation>
+
+Example:
+**Answer:** The total revenue is **[RESULT]**, which represents strong performance.
 """
 
 CHART_SUGGESTION_PROMPT = """Given this data analysis result:

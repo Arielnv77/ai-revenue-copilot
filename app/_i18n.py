@@ -155,6 +155,12 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "segments_info_2_txt": "Decide how many distinct groups (clusters) you want to divide your customer base into.",
         "segments_info_3_lbl": "Run Segmentation:",
         "segments_info_3_txt": 'The algorithm will mathematically group customers with similar purchasing behaviors, assign them actionable labels (like \u201cLoyal\u201d or \u201cAt Risk\u201d), and build comprehensive profiles so you can target them accurately via email campaigns or targeted ads.',
+        # Chat chips (suggested prompts)
+        "chip_1": "What is the total revenue?",
+        "chip_2": "Top 10 customers by spend",
+        "chip_3": "Revenue trend by month",
+        "chip_4": "Average order value",
+        "chip_5": "Show sales by product category",
         # Chat extras
         "demo_mode_key": "Demo mode active: using server key",
         "byok_key": "Using your BYOK key (session only)",
@@ -339,6 +345,12 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "segments_info_2_txt": "Decide en cu\u00e1ntos grupos distintos (cl\u00fasteres) quieres dividir tu base de clientes.",
         "segments_info_3_lbl": "Ejecutar Segmentaci\u00f3n:",
         "segments_info_3_txt": 'El algoritmo agrupar\u00e1 matem\u00e1ticamente a los clientes con comportamientos de compra similares, les asignar\u00e1 etiquetas accionables (como \u201cLeal\u201d o \u201cEn Riesgo\u201d) y crear\u00e1 perfiles completos para dirigirte a ellos con precisi\u00f3n.',
+        # Chat chips
+        "chip_1": "\u00bfCu\u00e1l es el ingreso total?",
+        "chip_2": "Top 10 clientes por gasto",
+        "chip_3": "Tendencia de ingresos por mes",
+        "chip_4": "Valor medio de pedido",
+        "chip_5": "Ventas por categor\u00eda de producto",
         # Chat extras
         "demo_mode_key": "Modo demo activo: usando clave del servidor",
         "byok_key": "Usando tu clave BYOK (solo esta sesi\u00f3n)",

@@ -84,6 +84,8 @@ class QueryEngine:
             try:
                 exec_result = self._safe_execute(result["code"])
                 result["execution_result"] = str(exec_result)
+                # Inject actual value into the answer text
+                result["answer"] = self._inject_result(result["answer"], exec_result)
             except Exception as e:
                 result["execution_error"] = str(e)
                 logger.warning("Code execution failed: %s", e)
@@ -242,6 +244,68 @@ class QueryEngine:
             raise RuntimeError("Execution produced no result")
 
         return container["value"]
+
+    # ──────────────────────────────────────────────────────────────────────────
+    # Result injection
+    # ──────────────────────────────────────────────────────────────────────────
+    def _format_value(self, value: Any) -> str:
+        """Format an execution result as a human-readable string."""
+        if value is None:
+            return "N/A"
+        if isinstance(value, float):
+            return f"{value:,.2f}"
+        if isinstance(value, (int,)):
+            return f"{value:,}"
+        if isinstance(value, pd.DataFrame):
+            if len(value) <= 15:
+                return f"\n{value.to_string()}"
+            return f"\n{value.head(10).to_string()}\n… ({len(value)} rows)"
+        if isinstance(value, pd.Series):
+            if len(value) <= 15:
+                return f"\n{value.to_string()}"
+            return f"\n{value.head(10).to_string()}\n… ({len(value)} items)"
+        return str(value)
+
+    def _inject_result(self, answer: str, exec_result: Any) -> str:
+        """Replace [RESULT] placeholder and fallback phrases with the actual value."""
+        formatted = self._format_value(exec_result)
+
+        # Primary: explicit [RESULT] placeholder the prompt tells the model to use
+        if "[RESULT]" in answer:
+            return answer.replace("[RESULT]", f"**{formatted}**")
+
+        # Fallback: replace common placeholder phrases the model might use anyway
+        _PLACEHOLDER_PATTERNS = [
+            r"the result of the above code",
+            r"the result of the code",
+            r"the result above",
+            r"result = [^\s,\.]+",
+            r"as calculated above",
+            r"as computed above",
+            r"approximately the result",
+            r"shown in the code",
+            r"computed by the code",
+        ]
+        import re as _re
+        result = answer
+        for pat in _PLACEHOLDER_PATTERNS:
+            new = _re.sub(pat, f"**{formatted}**", result, flags=_re.IGNORECASE)
+            if new != result:
+                result = new
+                break  # only replace the first match
+
+        # Last resort: if no replacement happened AND the value isn't already
+        # visible in the answer, append it
+        if result == answer and exec_result is not None:
+            # Don't append if value is already clearly present
+            if str(exec_result) not in answer and formatted.strip() not in answer:
+                trimmed = answer.rstrip(". ")
+                if formatted.startswith("\n"):
+                    result = trimmed + ":\n" + formatted.strip()
+                else:
+                    result = trimmed + f": **{formatted}**."
+
+        return result
 
     # ──────────────────────────────────────────────────────────────────────────
     def _build_context(self, df: pd.DataFrame) -> str:
