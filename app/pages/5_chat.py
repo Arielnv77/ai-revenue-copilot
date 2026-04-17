@@ -99,12 +99,21 @@ else:
             st.session_state.chat_history=[]; st.rerun()
         st.markdown('</div>',unsafe_allow_html=True)
 
-    # Render history (preserves code + insight from previous answers)
+    # Render history (preserves code + result card + insight from previous answers)
     for msg in st.session_state.chat_history:
         with st.chat_message(msg["role"]):
-            if msg["role"] == "assistant" and msg.get("code"):
-                st.markdown(f'<div class="chat-code-lbl">{t("code_executed")}</div>',unsafe_allow_html=True)
-                st.code(msg["code"],language="python")
+            if msg["role"] == "assistant":
+                if msg.get("code"):
+                    st.markdown(f'<div class="chat-code-lbl">{t("code_executed")}</div>',unsafe_allow_html=True)
+                    st.code(msg["code"],language="python")
+                _es = msg.get("exec_str","")
+                if _es:
+                    try:
+                        _n = float(str(_es).replace(",","").strip())
+                        _f = f"{_n:,.2f}" if isinstance(_n, float) and _n != int(_n) else f"{_n:,.0f}"
+                        st.markdown(f"""<div class="chat-result-card"><div class="chat-result-lbl">{t("answer_lbl")}</div><div class="chat-result-val">{_f}</div></div>""",unsafe_allow_html=True)
+                    except (ValueError, AttributeError):
+                        st.code(_es)
             st.markdown(msg["content"])
             if msg.get("insight"):
                 st.markdown(f'<div class="chat-insight">{msg["insight"]}</div>',unsafe_allow_html=True)
@@ -145,18 +154,47 @@ if question:
         with st.spinner(t("thinking")):
             res = _run_query(question)
         ans = res.get("answer","I couldn't generate an answer.")
+        exec_str = res.get("execution_result","")
+
+        # ── Show code if present ────────────────────────────────────────────
         if res.get("code"):
             st.markdown(f'<div class="chat-code-lbl">{t("code_executed")}</div>',unsafe_allow_html=True)
             st.code(res["code"],language="python")
-        st.markdown(f'<div class="chat-ans-lbl">{t("answer_lbl")}</div>',unsafe_allow_html=True)
-        st.markdown(ans)
+
+        # ── Prominent result display ────────────────────────────────────────
+        if exec_str:
+            _is_number = False
+            try:
+                _num = float(str(exec_str).replace(",","").strip())
+                _is_number = True
+            except (ValueError, AttributeError):
+                pass
+            if _is_number:
+                # Big metric card for scalar values
+                _formatted = f"{_num:,.2f}" if isinstance(_num, float) and _num != int(_num) else f"{_num:,.0f}"
+                st.markdown(f"""<div class="chat-result-card"><div class="chat-result-lbl">{t("answer_lbl")}</div><div class="chat-result-val">{_formatted}</div></div>""",unsafe_allow_html=True)
+            else:
+                # Table / series — show as code
+                st.markdown(f'<div class="chat-ans-lbl">{t("answer_lbl")}</div>',unsafe_allow_html=True)
+                st.code(exec_str)
+        
+        # ── Explanatory text ────────────────────────────────────────────────
+        # Clean trailing stale words left after placeholder replacement
+        import re as _re
+        _clean = _re.sub(r"\s+(above|below|here)\s*\.", ".", ans.strip())
+        _clean = _re.sub(r"\s+(above|below|here)\s*$", "", _clean).strip()
+        if _clean:
+            st.markdown(_clean)
+
+        # ── Execution error (visible to user) ──────────────────────────────
+        if res.get("execution_error"):
+            st.markdown(f'<div class="rc-err"><div class="rc-err-ttl">Code error</div><div class="rc-err-body">{res["execution_error"]}</div></div>',unsafe_allow_html=True)
+
+        # ── Insight card ────────────────────────────────────────────────────
         if res.get("insight"):
             st.markdown(f'<div class="chat-insight">{res["insight"]}</div>',unsafe_allow_html=True)
-        # execution_result is now injected into ans via QueryEngine._inject_result
-        # Only show it as fallback if the answer looks like it's still a placeholder
-        if res.get("execution_result") and "[RESULT]" in str(res.get("raw_response","")):
-            st.code(res["execution_result"])
-    st.session_state.chat_history.append({"role":"assistant","content":ans,"code":res.get("code",""),"insight":res.get("insight","")})
+
+    st.session_state.chat_history.append({"role":"assistant","content":ans,"code":res.get("code",""),"insight":res.get("insight",""),"exec_str":exec_str})
     st.rerun()
 
 # ── Footer ─────────────────────────────────────────────────────────────────────

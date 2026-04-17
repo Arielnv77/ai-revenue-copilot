@@ -277,14 +277,18 @@ class QueryEngine:
         # Fallback: replace common placeholder phrases the model might use anyway
         _PLACEHOLDER_PATTERNS = [
             r"the result of the above code",
+            r"the result of the code above",
             r"the result of the code",
+            r"the code above",
+            r"the above code",
             r"the result above",
-            r"result = [^\s,\.]+",
+            r"approximately the result",
             r"as calculated above",
             r"as computed above",
-            r"approximately the result",
             r"shown in the code",
             r"computed by the code",
+            r"the calculated value",
+            r"the computed value",
         ]
         import re as _re
         result = answer

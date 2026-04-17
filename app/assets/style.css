@@ -487,6 +487,32 @@ section.main .block-container {
   width: 5px; height: 5px; border-radius: 50%;
   background: #34d399; box-shadow: 0 0 5px #34d399;
 }
+/* Big result card — shown when execution returns a scalar */
+.chat-result-card {
+  background: linear-gradient(135deg, rgba(52,211,153,0.1) 0%, rgba(45,212,191,0.06) 100%);
+  border: 1px solid rgba(52,211,153,0.28);
+  border-radius: 14px;
+  padding: 1.1rem 1.75rem;
+  margin: 0.6rem 0 0.9rem;
+  display: inline-block;
+  min-width: 180px;
+}
+.chat-result-val {
+  font-family: 'Syne', sans-serif;
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: #34d399;
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+}
+.chat-result-lbl {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: #4a7c59;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
 /* Code / answer labels in chat */
 .chat-code-lbl, .chat-ans-lbl {
   font-size: 0.6rem; color: #4a7c59;
